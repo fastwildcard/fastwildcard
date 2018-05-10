@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
+    <Authors>Alex Angas</Authors>
+    <Company />
+    <Description>A fast and robust wildcard matching library for .NET Standard.</Description>
+    <Copyright>Copyright (c) 2018 Alex Angas</Copyright>
+    <PackageLicenseUrl>https://github.com/fastwildcard/fastwildcard/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/fastwildcard/fastwildcard</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/fastwildcard/fastwildcard</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>wildcard match string</PackageTags>
   </PropertyGroup>
 
 </Project>
