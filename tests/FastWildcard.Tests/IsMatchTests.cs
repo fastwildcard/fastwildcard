@@ -9,7 +9,6 @@ namespace FastWildcard.Tests
         [Theory]
         [InlineData("abcde", null)]
         [InlineData("abcde", "")]
-        [InlineData("abcde", " ")]
         public void SingleCharacterWildcard_WithInvalidInputs_ThrowsException(string str, string pattern)
         {
             var resultAction = new Action(() => FastWildcard.IsMatch(str, pattern));
@@ -30,6 +29,7 @@ namespace FastWildcard.Tests
         [Theory]
         [InlineData("ab", "a?c")]
         [InlineData("abc", "a?")]
+        [InlineData("abc", " ")]
         public void SingleCharacterWildcard_WithMatchAndLengthEdgeCases_ReturnsFalse(string str, string pattern)
         {
             var result = FastWildcard.IsMatch(str, pattern);
@@ -115,6 +115,7 @@ namespace FastWildcard.Tests
 
         [Theory]
         [InlineData("abcde", "abcde")]
+        [InlineData(" ", " ")]
         public void NoWildcard_WithMatch_ReturnsTrue(string str, string pattern)
         {
             var result = FastWildcard.IsMatch(str, pattern);
@@ -124,6 +125,8 @@ namespace FastWildcard.Tests
 
         [Theory]
         [InlineData("abbde", "abcde")]
+        [InlineData(" ", "  ")]
+        [InlineData("  ", " ")]
         public void NoWildcard_WithNoMatch_ReturnsFalse(string str, string pattern)
         {
             var result = FastWildcard.IsMatch(str, pattern);

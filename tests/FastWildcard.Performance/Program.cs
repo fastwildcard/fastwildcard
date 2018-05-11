@@ -9,7 +9,7 @@ namespace FastWildcard.Performance
         static void Main(string[] args)
         {
             BenchmarkRunner.Run<StandardLength>();
-            BenchmarkRunner.Run<DotNetCore>();
+            // BenchmarkRunner.Run<DotNetCore>();
         }
     }
 }
