@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastWildcard", "src\FastWil
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastWildcard.Performance", "tests\FastWildcard.Performance\FastWildcard.Performance.csproj", "{5C737FA0-EBE2-48E4-A03A-B9327931311D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastWildcard.Tests", "tests\FastWildcard.Tests\FastWildcard.Tests.csproj", "{AD18367B-D8F9-4992-A32C-4F2D2DB99794}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastWildcard.Performance.Tests", "tests\FastWildcard.Performance.Tests\FastWildcard.Performance.Tests.csproj", "{AD18367B-D8F9-4992-A32C-4F2D2DB99794}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
