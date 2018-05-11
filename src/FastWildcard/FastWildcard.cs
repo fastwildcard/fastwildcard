@@ -12,26 +12,31 @@ namespace FastWildcard
         /// <returns>True if a match is found, false otherwise</returns>
         public static bool IsMatch(string str, string pattern)
         {
-            if (String.IsNullOrWhiteSpace(pattern))
+            // Pattern must contain something
+            if (String.IsNullOrEmpty(pattern))
             {
                 throw new ArgumentOutOfRangeException(nameof(pattern));
             }
 
+            // Uninitialised string never matches
             if (str == null)
             {
                 return false;
             }
 
+            // Multi character wildcard matches everything
             if (pattern == "*")
             {
                 return true;
             }
 
+            // Empty string does not match
             if (str == "")
             {
                 return false;
             }
 
+            // If pattern is longer than string, it cannot match
             if (pattern.Length > str.Length)
             {
                 return false;
@@ -72,17 +77,19 @@ namespace FastWildcard
 
                 // Skip '?' if followed by '*'
                 var endMultiCharacterWildcardCh = pattern[patternIndex + 1];
-                while (endMultiCharacterWildcardCh == '?')
+                if (endMultiCharacterWildcardCh == '?')
                 {
-                    patternIndex++;
-
-                    // End of string is '*?'
-                    if (patternIndex + 1 >= pattern.Length)
+                    while (endMultiCharacterWildcardCh == '?')
                     {
-                        return true;
-                    }
+                        // End of string is '*?'
+                        if (patternIndex + 2 >= pattern.Length)
+                        {
+                            return true;
+                        }
 
-                    endMultiCharacterWildcardCh = pattern[patternIndex + 1];
+                        patternIndex++;
+                        endMultiCharacterWildcardCh = pattern[patternIndex + 1];
+                    }
                 }
 
                 // Skip until reach next real character
