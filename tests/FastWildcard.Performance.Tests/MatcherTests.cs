@@ -9,12 +9,9 @@ namespace FastWildcard.Tests
     public class MatcherTests
     {
         [Theory]
-        [InlineData("a?c", "abc")]
-        [InlineData("a?c?e", "abcde")]
-        [InlineData("a???e", "abcde")]
-        [InlineData("?bcde", "abcde")]
-        [InlineData("abcd?", "abcde")]
-        public void SingleCharacterWildcard_WithMatch_ReturnsTrue(string pattern, string str)
+        [InlineData("abc", "a?c")]
+        [InlineData("abcde", "a?c?e")]
+        public void SingleCharacterWildcard_WithMatch_ReturnsTrue(string str, string pattern)
         {
             var regexMatcher = new RegexMatcher(pattern, RegexOptions.None);
             var wildcardMatchMatcher = new WildcardMatchMatcher();
@@ -26,7 +23,6 @@ namespace FastWildcard.Tests
             var fastWildcardMatcherResult = fastWildcardMatcher.Match(str, pattern);
             var automationWildcardMatcherResult = automationWildcardMatcher.Match(str);
 
-
             regexMatcherResult.Should().BeTrue();
             wildcardMatchMatcherResult.Should().BeTrue();
             fastWildcardMatcherResult.Should().BeTrue();
@@ -34,11 +30,9 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
-        [InlineData("a?cde", "abcdef")]
-        [InlineData("a?cde", "bbcde")]
-        [InlineData("?bcde", "bacde")]
-        [InlineData("abcd?", "bbcde")]
-        public void SingleCharacterWildcard_WithNoMatch_ReturnsFalse(string pattern, string str)
+        [InlineData("bbcde", "a?cde")]
+        [InlineData("bbcde", "abcde")]
+        public void SingleCharacterWildcard_WithNoMatch_ReturnsFalse(string str, string pattern)
         {
             var regexMatcher = new RegexMatcher(pattern, RegexOptions.None);
             var wildcardMatchMatcher = new WildcardMatchMatcher();
@@ -57,11 +51,9 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
-        [InlineData("a*c", "abc")]
-        [InlineData("a*e", "abcde")]
-        [InlineData("*bcde", "abcde")]
-        [InlineData("abcd*", "abcde")]
-        public void MultiCharacterWildcard_WithMatch_ReturnsTrue(string pattern, string str)
+        [InlineData("abc", "a*c")]
+        [InlineData("abcde", "a*e")]
+        public void MultiCharacterWildcard_WithMatch_ReturnsTrue(string str, string pattern)
         {
             var regexMatcher = new RegexMatcher(pattern, RegexOptions.None);
             var wildcardMatchMatcher = new WildcardMatchMatcher();
@@ -80,11 +72,8 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
-        [InlineData("a*cde", "abbde")]
-        [InlineData("a*cde", "bbcde")]
-        [InlineData("*bcde", "bacde")]
-        [InlineData("abcd*", "bbcde")]
-        public void MultiCharacterWildcard_WithNoMatch_ReturnsFalse(string pattern, string str)
+        [InlineData("abbde", "a*cde")]
+        public void MultiCharacterWildcard_WithNoMatch_ReturnsFalse(string str, string pattern)
         {
             var regexMatcher = new RegexMatcher(pattern, RegexOptions.None);
             var wildcardMatchMatcher = new WildcardMatchMatcher();
