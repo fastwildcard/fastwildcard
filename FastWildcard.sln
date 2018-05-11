@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastWildcard.Performance", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastWildcard.Performance.Tests", "tests\FastWildcard.Performance.Tests\FastWildcard.Performance.Tests.csproj", "{AD18367B-D8F9-4992-A32C-4F2D2DB99794}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastWildcard.Tests", "tests\FastWildcard.Tests\FastWildcard.Tests.csproj", "{57D8C898-2699-4661-A95C-665542903887}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PerformanceTesting", "PerformanceTesting", "{56A02674-CA0E-4401-8FFB-59580F9597AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +31,17 @@ Global
 		{AD18367B-D8F9-4992-A32C-4F2D2DB99794}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD18367B-D8F9-4992-A32C-4F2D2DB99794}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD18367B-D8F9-4992-A32C-4F2D2DB99794}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57D8C898-2699-4661-A95C-665542903887}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57D8C898-2699-4661-A95C-665542903887}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57D8C898-2699-4661-A95C-665542903887}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57D8C898-2699-4661-A95C-665542903887}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5C737FA0-EBE2-48E4-A03A-B9327931311D} = {56A02674-CA0E-4401-8FFB-59580F9597AA}
+		{AD18367B-D8F9-4992-A32C-4F2D2DB99794} = {56A02674-CA0E-4401-8FFB-59580F9597AA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {32FCC5B3-8F6C-495D-8F65-18832BF6F5F0}
