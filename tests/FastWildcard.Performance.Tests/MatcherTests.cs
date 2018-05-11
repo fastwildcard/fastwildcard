@@ -23,7 +23,7 @@ namespace FastWildcard.Tests
 
             var regexMatcherResult = regexMatcher.Match(str);
             var wildcardMatchMatcherResult = wildcardMatchMatcher.Match(pattern, str);
-            var fastWildcardMatcherResult = fastWildcardMatcher.Match(pattern, str);
+            var fastWildcardMatcherResult = fastWildcardMatcher.Match(str, pattern);
             var automationWildcardMatcherResult = automationWildcardMatcher.Match(str);
 
 
@@ -47,7 +47,7 @@ namespace FastWildcard.Tests
 
             var regexMatcherResult = regexMatcher.Match(str);
             var wildcardMatchMatcherResult = wildcardMatchMatcher.Match(pattern, str);
-            var fastWildcardMatcherResult = fastWildcardMatcher.Match(pattern, str);
+            var fastWildcardMatcherResult = fastWildcardMatcher.Match(str, pattern);
             var automationWildcardMatcherResult = automationWildcardMatcher.Match(str);
 
             regexMatcherResult.Should().BeFalse();
@@ -70,7 +70,7 @@ namespace FastWildcard.Tests
 
             var regexMatcherResult = regexMatcher.Match(str);
             var wildcardMatchMatcherResult = wildcardMatchMatcher.Match(pattern, str);
-            var fastWildcardMatcherResult = fastWildcardMatcher.Match(pattern, str);
+            var fastWildcardMatcherResult = fastWildcardMatcher.Match(str, pattern);
             var automationWildcardMatcherResult = automationWildcardMatcher.Match(str);
 
             regexMatcherResult.Should().BeTrue();
@@ -93,7 +93,7 @@ namespace FastWildcard.Tests
 
             var regexMatcherResult = regexMatcher.Match(str);
             var wildcardMatchMatcherResult = wildcardMatchMatcher.Match(pattern, str);
-            var fastWildcardMatcherResult = fastWildcardMatcher.Match(pattern, str);
+            var fastWildcardMatcherResult = fastWildcardMatcher.Match(str, pattern);
             var automationWildcardMatcherResult = automationWildcardMatcher.Match(str);
 
             regexMatcherResult.Should().BeFalse();

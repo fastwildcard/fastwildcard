@@ -55,6 +55,6 @@ namespace FastWildcard.Performance.Benchmarks
         public bool RegexCompiled() => _regexMatcherCompiled.Match(_str);
 
         [Benchmark]
-        public bool FastWildcard() => _fastWildcardMatcher.Match(_pattern, _str);
+        public bool FastWildcard() => _fastWildcardMatcher.Match(_str, _pattern);
     }
 }

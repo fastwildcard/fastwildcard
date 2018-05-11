@@ -2,9 +2,9 @@
 {
     public class FastWildcardMatcher
     {
-        public bool Match(string pattern, string str)
+        public bool Match(string str, string pattern)
         {
-            return FastWildcard.IsMatch(pattern, str);
+            return FastWildcard.IsMatch(str, pattern);
         }
     }
 }

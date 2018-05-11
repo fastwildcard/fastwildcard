@@ -71,6 +71,6 @@ namespace FastWildcard.Performance.Benchmarks
         public bool AutomationWildcardPatternCompiled() => _automationWildcardMatcherCompiled.Match(_str);
 
         [Benchmark]
-        public bool FastWildcard() => _fastWildcardMatcher.Match(_pattern, _str);
+        public bool FastWildcard() => _fastWildcardMatcher.Match(_str, _pattern);
     }
 }

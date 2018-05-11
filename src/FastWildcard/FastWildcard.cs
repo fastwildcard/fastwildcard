@@ -2,7 +2,7 @@
 {
     public class FastWildcard
     {
-        public static bool IsMatch(string pattern, string str)
+        public static bool IsMatch(string str, string pattern)
         {
             var strIndex = 0;
 
