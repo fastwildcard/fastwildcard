@@ -4,6 +4,8 @@ namespace FastWildcard
 {
     public class FastWildcard
     {
+        private static readonly char[] WildcardCharacters = {'?', '*'};
+
         /// <summary>
         /// Returns if the input string <paramref name="str"/> matches the given wildcard pattern <paramref name="pattern"/>.
         /// </summary>
@@ -23,6 +25,31 @@ namespace FastWildcard
             {
                 return false;
             }
+
+            // Collapse repeated wildcard characters
+            /*
+            var patternBuilder = new StringBuilder(inputPattern.Length);
+            var lastCh = inputPattern[0];
+            patternBuilder.Append(lastCh);
+            for (var inputIndex = 1; inputIndex < inputPattern.Length; inputIndex++)
+            {
+                var inputCh = inputPattern[inputIndex];
+
+                if (lastCh == '*' && (inputCh == '*' || inputCh == '?'))
+                {
+                    continue;
+                }
+
+                if (lastCh == '?' && inputCh == '*')
+                {
+                    patternBuilder.Remove(patternBuilder.Length - 1, 1);
+                }
+
+                patternBuilder.Append(inputCh);
+                lastCh = inputCh;
+            }
+            var pattern = patternBuilder.ToString();
+            */
 
             // Multi character wildcard matches everything
             if (pattern == "*")
@@ -47,64 +74,65 @@ namespace FastWildcard
             {
                 var patternCh = pattern[patternIndex];
 
-                //// Character match
+                // Character match
                 if (patternCh == str[strIndex])
                 {
                     strIndex++;
                     continue;
                 }
 
-                //// Single wildcard match
+                // Single wildcard match
                 if (patternCh == '?')
                 {
                     strIndex++;
                     continue;
                 }
 
-                //// No match
+                // No match
                 if (patternCh != '*')
                 {
                     return false;
                 }
 
-                //// Multi character wildcard - last character in the pattern
+                // Multi character wildcard - last character in the pattern
                 if (patternIndex == pattern.Length - 1)
                 {
                     return true;
                 }
 
-                //// Multi character wildcard match - general case
-
-                // Skip '?' if followed by '*'
-                var endMultiCharacterWildcardCh = pattern[patternIndex + 1];
-                if (endMultiCharacterWildcardCh == '?')
+                // Multi character wildcard match - general case
+                var nextWildcardIndex = pattern.IndexOfAny(WildcardCharacters, patternIndex + 1);
+                int skipStringEndIndex;
+                if (nextWildcardIndex == -1)
                 {
-                    while (endMultiCharacterWildcardCh == '?')
-                    {
-                        // End of string is '*?'
-                        if (patternIndex + 2 >= pattern.Length)
-                        {
-                            return true;
-                        }
-
-                        patternIndex++;
-                        endMultiCharacterWildcardCh = pattern[patternIndex + 1];
-                    }
+                    skipStringEndIndex = pattern.Length - 1;
+                }
+                else
+                {
+                    skipStringEndIndex = nextWildcardIndex - 1;
                 }
 
-                // Skip until reach next real character
-                do
+                var skipToString = pattern.Substring(patternIndex + 1, skipStringEndIndex - patternIndex);
+
+                var skipToStringIndex = str.IndexOf(skipToString, strIndex + 1, StringComparison.Ordinal);
+                if (skipToStringIndex == -1)
                 {
-                    strIndex++;
-                    if (strIndex == str.Length)
-                    {
-                        return false;
-                    }
-                } while (str[strIndex] != endMultiCharacterWildcardCh);
+                    return false;
+                }
+
+                strIndex = skipToStringIndex;
+                if (strIndex == str.Length)
+                {
+                    return true;
+                }
             }
 
+            // Pattern processing completed but rest of input string was not
             if (strIndex < str.Length)
+            {
                 return false;
+            }
+
             return true;
         }
     }

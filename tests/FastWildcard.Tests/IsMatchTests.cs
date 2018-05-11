@@ -74,8 +74,14 @@ namespace FastWildcard.Tests
         [Theory]
         [InlineData("abc", "a*c")]
         [InlineData("abcde", "a*e")]
+        [InlineData("abcde", "a**e")]
         [InlineData("abcde", "*bcde")]
         [InlineData("abcde", "abcd*")]
+        [InlineData("abcdefg", "*bc*fg")]
+        [InlineData("aabbccaabbddaabbee", "a*b*a*ee")]
+        [InlineData("abc/def/ghi", "abc*/ghi")]
+        [InlineData("abc/def/ghi", "abc/*/ghi")]
+        [InlineData("abc/def/ghi", "*/ghi")]
         public void MultiCharacterWildcard_WithMatch_ReturnsTrue(string str, string pattern)
         {
             var result = FastWildcard.IsMatch(str, pattern);
@@ -88,6 +94,7 @@ namespace FastWildcard.Tests
         [InlineData("bbcde", "a*cde")]
         [InlineData("bacde", "*bcde")]
         [InlineData("bbcde", "abcd*")]
+        [InlineData("aabbccaabbddaabbee", "a*b*a*e")]
         public void MultiCharacterWildcard_WithNoMatch_ReturnsFalse(string str, string pattern)
         {
             var result = FastWildcard.IsMatch(str, pattern);
@@ -98,6 +105,15 @@ namespace FastWildcard.Tests
         [Theory]
         [InlineData("abcde", "a?c*e")]
         [InlineData("abcde", "a*c?e")]
+        [InlineData("aabbccaabbddaabbee", "a*b?cca*b*ee")]
+        public void MixedWildcard_WithMatch_ReturnsTrue(string str, string pattern)
+        {
+            var result = FastWildcard.IsMatch(str, pattern);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory(Skip = "Coming in a future version")]
         [InlineData("abcde", "a?*e")]
         [InlineData("abcde", "a*?e")]
         [InlineData("abcde", "a?*")]
@@ -106,7 +122,7 @@ namespace FastWildcard.Tests
         [InlineData("abcde", "*?e")]
         [InlineData("abcde", "*?")]
         [InlineData("abcde", "?*")]
-        public void MixedWildcard_WithMatch_ReturnsTrue(string str, string pattern)
+        public void UncollapsedWildcard_WithMatch_ReturnsTrue(string str, string pattern)
         {
             var result = FastWildcard.IsMatch(str, pattern);
 
