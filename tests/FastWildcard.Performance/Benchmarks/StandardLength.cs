@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Management.Automation;
 using System.Text;
 using System.Text.RegularExpressions;
 using BenchmarkDotNet.Attributes;
@@ -19,16 +18,15 @@ namespace FastWildcard.Performance.Benchmarks
         private const int MultiCharacterMatchCount = 2;
         private const int MultiCharacterStart = 12;
         private const int MultiCharacterEnd = 24;
-        private readonly string _pattern;
-        private readonly string _str;
-        private readonly RegexMatcher _regexMatcher;
-        private readonly RegexMatcher _regexMatcherCompiled;
-        private readonly WildcardMatchMatcher _wildcardMatchMatcher;
-        private readonly AutomationWildcardMatcher _automationWildcardMatcher;
-        private readonly AutomationWildcardMatcher _automationWildcardMatcherCompiled;
-        private readonly FastWildcardMatcher _fastWildcardMatcher;
+        private string _pattern;
+        private string _str;
+        private FastWildcardMatcher _fastWildcardMatcher;
+        private RegexMatcher _regexMatcher;
+        private RegexMatcher _regexMatcherCompiled;
+        private WildcardMatchMatcher _wildcardMatchMatcher;
 
-        public StandardLength()
+        [IterationSetup]
+        public void IterationSetup()
         {
             var patternBuilder = new StringBuilder(new Bogus.Randomizer().AlphaNumeric(StringLength));
 
@@ -45,15 +43,17 @@ namespace FastWildcard.Performance.Benchmarks
             multiCharacterLocations.ForEach(x => patternBuilder[x] = '*');
 
             _pattern = patternBuilder.ToString();
+
+            _fastWildcardMatcher = new FastWildcardMatcher();
             _regexMatcher = new RegexMatcher(_pattern, RegexOptions.None);
             _regexMatcherCompiled = new RegexMatcher(_pattern, RegexOptions.Compiled);
             _wildcardMatchMatcher = new WildcardMatchMatcher();
-            _automationWildcardMatcher = new AutomationWildcardMatcher(_pattern, WildcardOptions.None);
-            _automationWildcardMatcherCompiled = new AutomationWildcardMatcher(_pattern, WildcardOptions.Compiled);
-            _fastWildcardMatcher = new FastWildcardMatcher();
 
             _str = new Bogus.Randomizer().AlphaNumeric(StringLength);
         }
+
+        [Benchmark]
+        public bool FastWildcard() => _fastWildcardMatcher.Match(_str, _pattern);
 
         [Benchmark]
         public bool Regex() => _regexMatcher.Match(_str);
@@ -63,14 +63,5 @@ namespace FastWildcard.Performance.Benchmarks
 
         [Benchmark]
         public bool WildcardMatch() => _wildcardMatchMatcher.Match(_pattern, _str);
-
-        [Benchmark]
-        public bool AutomationWildcardPattern() => _automationWildcardMatcher.Match(_str);
-
-        [Benchmark]
-        public bool AutomationWildcardPatternCompiled() => _automationWildcardMatcherCompiled.Match(_str);
-
-        [Benchmark]
-        public bool FastWildcard() => _fastWildcardMatcher.Match(_str, _pattern);
     }
 }

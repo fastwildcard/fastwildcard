@@ -1,5 +1,4 @@
-﻿using System;
-using BenchmarkDotNet.Running;
+﻿using BenchmarkDotNet.Running;
 using FastWildcard.Performance.Benchmarks;
 
 namespace FastWildcard.Performance
@@ -9,7 +8,7 @@ namespace FastWildcard.Performance
         static void Main(string[] args)
         {
             BenchmarkRunner.Run<StandardLength>();
-            // BenchmarkRunner.Run<DotNetCore>();
+            // BenchmarkRunner.Run<CrossFramework>();
         }
     }
 }
