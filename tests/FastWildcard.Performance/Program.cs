@@ -8,7 +8,7 @@ namespace FastWildcard.Performance
         static void Main(string[] args)
         {
             BenchmarkRunner.Run<StandardLength>();
-            // BenchmarkRunner.Run<CrossFramework>();
+            BenchmarkRunner.Run<CrossFramework>();
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
 using FastWildcard.Performance.Matchers;
 
 namespace FastWildcard.Performance.Benchmarks
@@ -23,7 +22,9 @@ namespace FastWildcard.Performance.Benchmarks
         private FastWildcardMatcher _fastWildcardMatcher;
         private RegexMatcher _regexMatcher;
         private RegexMatcher _regexMatcherCompiled;
+#if !NETCOREAPP
         private WildcardMatchMatcher _wildcardMatchMatcher;
+#endif
 
         [IterationSetup]
         public void IterationSetup()
@@ -47,7 +48,9 @@ namespace FastWildcard.Performance.Benchmarks
             _fastWildcardMatcher = new FastWildcardMatcher();
             _regexMatcher = new RegexMatcher(_pattern, RegexOptions.None);
             _regexMatcherCompiled = new RegexMatcher(_pattern, RegexOptions.Compiled);
+#if !NETCOREAPP
             _wildcardMatchMatcher = new WildcardMatchMatcher();
+#endif
 
             _str = new Bogus.Randomizer().AlphaNumeric(StringLength);
         }
@@ -61,7 +64,9 @@ namespace FastWildcard.Performance.Benchmarks
         [Benchmark]
         public bool RegexCompiled() => _regexMatcherCompiled.Match(_str);
 
+#if !NETCOREAPP
         [Benchmark]
         public bool WildcardMatch() => _wildcardMatchMatcher.Match(_pattern, _str);
+#endif
     }
 }

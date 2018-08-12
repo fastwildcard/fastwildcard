@@ -13,15 +13,21 @@ namespace FastWildcard.Performance.Tests
         public void SingleCharacterWildcard_WithMatch_ReturnsTrue(string str, string pattern)
         {
             var regexMatcher = new RegexMatcher(pattern, RegexOptions.None);
+#if !NETCOREAPP
             var wildcardMatchMatcher = new WildcardMatchMatcher();
+#endif
             var fastWildcardMatcher = new FastWildcardMatcher();
 
             var regexMatcherResult = regexMatcher.Match(str);
+#if !NETCOREAPP
             var wildcardMatchMatcherResult = wildcardMatchMatcher.Match(pattern, str);
+#endif
             var fastWildcardMatcherResult = fastWildcardMatcher.Match(str, pattern);
 
             regexMatcherResult.Should().BeTrue();
+#if !NETCOREAPP
             wildcardMatchMatcherResult.Should().BeTrue();
+#endif
             fastWildcardMatcherResult.Should().BeTrue();
         }
 
@@ -31,15 +37,21 @@ namespace FastWildcard.Performance.Tests
         public void SingleCharacterWildcard_WithNoMatch_ReturnsFalse(string str, string pattern)
         {
             var regexMatcher = new RegexMatcher(pattern, RegexOptions.None);
+#if !NETCOREAPP
             var wildcardMatchMatcher = new WildcardMatchMatcher();
+#endif
             var fastWildcardMatcher = new FastWildcardMatcher();
 
             var regexMatcherResult = regexMatcher.Match(str);
+#if !NETCOREAPP
             var wildcardMatchMatcherResult = wildcardMatchMatcher.Match(pattern, str);
+#endif
             var fastWildcardMatcherResult = fastWildcardMatcher.Match(str, pattern);
 
             regexMatcherResult.Should().BeFalse();
+#if !NETCOREAPP
             wildcardMatchMatcherResult.Should().BeFalse();
+#endif
             fastWildcardMatcherResult.Should().BeFalse();
         }
 
@@ -49,15 +61,21 @@ namespace FastWildcard.Performance.Tests
         public void MultiCharacterWildcard_WithMatch_ReturnsTrue(string str, string pattern)
         {
             var regexMatcher = new RegexMatcher(pattern, RegexOptions.None);
+#if !NETCOREAPP
             var wildcardMatchMatcher = new WildcardMatchMatcher();
+#endif
             var fastWildcardMatcher = new FastWildcardMatcher();
 
             var regexMatcherResult = regexMatcher.Match(str);
+#if !NETCOREAPP
             var wildcardMatchMatcherResult = wildcardMatchMatcher.Match(pattern, str);
+#endif
             var fastWildcardMatcherResult = fastWildcardMatcher.Match(str, pattern);
 
             regexMatcherResult.Should().BeTrue();
+#if !NETCOREAPP
             wildcardMatchMatcherResult.Should().BeTrue();
+#endif
             fastWildcardMatcherResult.Should().BeTrue();
         }
 
@@ -66,15 +84,21 @@ namespace FastWildcard.Performance.Tests
         public void MultiCharacterWildcard_WithNoMatch_ReturnsFalse(string str, string pattern)
         {
             var regexMatcher = new RegexMatcher(pattern, RegexOptions.None);
+#if !NETCOREAPP
             var wildcardMatchMatcher = new WildcardMatchMatcher();
+#endif
             var fastWildcardMatcher = new FastWildcardMatcher();
 
             var regexMatcherResult = regexMatcher.Match(str);
+#if !NETCOREAPP
             var wildcardMatchMatcherResult = wildcardMatchMatcher.Match(pattern, str);
+#endif
             var fastWildcardMatcherResult = fastWildcardMatcher.Match(str, pattern);
 
             regexMatcherResult.Should().BeFalse();
+#if !NETCOREAPP
             wildcardMatchMatcherResult.Should().BeFalse();
+#endif
             fastWildcardMatcherResult.Should().BeFalse();
         }
     }
