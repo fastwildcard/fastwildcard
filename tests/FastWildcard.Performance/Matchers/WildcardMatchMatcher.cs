@@ -1,4 +1,5 @@
-﻿using WildcardMatch;
+﻿#if !NETCOREAPP
+using WildcardMatch;
 
 namespace FastWildcard.Performance.Matchers
 {
@@ -10,3 +11,4 @@ namespace FastWildcard.Performance.Matchers
         }
     }
 }
+#endif
