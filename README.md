@@ -4,7 +4,7 @@ A fast and robust wildcard matching library for .NET Standard.
 
 ## Pattern syntax
 
-* '*' matches 1 or more characters
+* '*' matches 0 or more characters
 * '?' matches 1 character
 
 For examples, please review the `FastWildcard.Tests` project.
