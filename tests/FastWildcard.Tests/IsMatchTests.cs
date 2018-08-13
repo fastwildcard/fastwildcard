@@ -93,6 +93,8 @@ namespace FastWildcard.Tests
         [InlineData("abc", "a*bc")]
         [InlineData("abc", "*abc")]
         [InlineData("abc", "abc*")]
+        [InlineData("abc", "a*bc*de")]
+        [InlineData("abcde", "a*b*c*d*e")]
         public void MultiCharacterWildcard_WithBlank_ReturnsTrue(string str, string pattern)
         {
             var result = FastWildcard.IsMatch(str, pattern);
