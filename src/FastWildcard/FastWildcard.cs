@@ -101,10 +101,6 @@ namespace FastWildcard
                 }
 
                 strIndex = skipToStringIndex;
-                if (strIndex == str.Length)
-                {
-                    return true;
-                }
             }
 
             // Pattern processing completed but rest of input string was not
