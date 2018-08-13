@@ -78,11 +78,22 @@ namespace FastWildcard.Tests
         [InlineData("abcde", "*bcde")]
         [InlineData("abcde", "abcd*")]
         [InlineData("abcdefg", "*bc*fg")]
-        [InlineData("aabbccaabbddaabbee", "a*b*a*ee")]
         [InlineData("abc/def/ghi", "abc*/ghi")]
         [InlineData("abc/def/ghi", "abc/*/ghi")]
         [InlineData("abc/def/ghi", "*/ghi")]
+        [InlineData("aabbccaabbddaabbee", "a*b*a*ee")]
         public void MultiCharacterWildcard_WithMatch_ReturnsTrue(string str, string pattern)
+        {
+            var result = FastWildcard.IsMatch(str, pattern);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData("abc", "a*bc")]
+        [InlineData("abc", "*abc")]
+        [InlineData("abc", "abc*")]
+        public void MultiCharacterWildcard_WithBlank_ReturnsTrue(string str, string pattern)
         {
             var result = FastWildcard.IsMatch(str, pattern);
 
@@ -103,26 +114,12 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [InlineData("ab", "a?*")]
         [InlineData("abcde", "a?c*e")]
         [InlineData("abcde", "a*c?e")]
+        [InlineData("abcde", "a?*de")]
         [InlineData("aabbccaabbddaabbee", "a*b?cca*b*ee")]
         public void MixedWildcard_WithMatch_ReturnsTrue(string str, string pattern)
-        {
-            var result = FastWildcard.IsMatch(str, pattern);
-
-            result.Should().BeTrue();
-        }
-
-        [Theory(Skip = "Coming in a future version")]
-        [InlineData("abcde", "a?*e")]
-        [InlineData("abcde", "a*?e")]
-        [InlineData("abcde", "a?*")]
-        [InlineData("abcde", "a*?")]
-        [InlineData("abcde", "?*e")]
-        [InlineData("abcde", "*?e")]
-        [InlineData("abcde", "*?")]
-        [InlineData("abcde", "?*")]
-        public void UncollapsedWildcard_WithMatch_ReturnsTrue(string str, string pattern)
         {
             var result = FastWildcard.IsMatch(str, pattern);
 

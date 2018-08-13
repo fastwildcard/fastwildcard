@@ -26,31 +26,6 @@ namespace FastWildcard
                 return false;
             }
 
-            // Collapse repeated wildcard characters
-            /*
-            var patternBuilder = new StringBuilder(inputPattern.Length);
-            var lastCh = inputPattern[0];
-            patternBuilder.Append(lastCh);
-            for (var inputIndex = 1; inputIndex < inputPattern.Length; inputIndex++)
-            {
-                var inputCh = inputPattern[inputIndex];
-
-                if (lastCh == '*' && (inputCh == '*' || inputCh == '?'))
-                {
-                    continue;
-                }
-
-                if (lastCh == '?' && inputCh == '*')
-                {
-                    patternBuilder.Remove(patternBuilder.Length - 1, 1);
-                }
-
-                patternBuilder.Append(inputCh);
-                lastCh = inputCh;
-            }
-            var pattern = patternBuilder.ToString();
-            */
-
             // Multi character wildcard matches everything
             if (pattern == "*")
             {
@@ -63,16 +38,21 @@ namespace FastWildcard
                 return false;
             }
 
-            // If pattern is longer than string, it cannot match
-            if (pattern.Length > str.Length)
-            {
-                return false;
-            }
-
             var strIndex = 0;
             for (var patternIndex = 0; patternIndex < pattern.Length; patternIndex++)
             {
                 var patternCh = pattern[patternIndex];
+
+                if (strIndex >= str.Length)
+                {
+                    // At end of pattern for this longer string so always matches '*'
+                    if (patternCh == '*')
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
 
                 // Character match
                 if (patternCh == str[strIndex])
@@ -114,7 +94,7 @@ namespace FastWildcard
 
                 var skipToString = pattern.Substring(patternIndex + 1, skipStringEndIndex - patternIndex);
 
-                var skipToStringIndex = str.IndexOf(skipToString, strIndex + 1, StringComparison.Ordinal);
+                var skipToStringIndex = str.IndexOf(skipToString, strIndex, StringComparison.Ordinal);
                 if (skipToStringIndex == -1)
                 {
                     return false;
