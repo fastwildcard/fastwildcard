@@ -1,5 +1,7 @@
 # FastWildcard
 
+[![Build status](https://ci.appveyor.com/api/projects/status/94xf2m1qnljqe431?svg=true)](https://ci.appveyor.com/project/alexangas/fastwildcard)
+
 A fast and robust wildcard matching library for .NET Standard.
 
 ## Pattern syntax
