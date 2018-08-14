@@ -1,0 +1,25 @@
+# Build .NET Core project using VSTS
+# https://docs.microsoft.com/vsts/pipelines/languages/dotnet-core?view=vsts
+
+queue: 'Hosted VS2017'
+variables:
+  buildConfiguration: 'Release'
+  testProject: '.\tests\FastWildcard.Tests'
+
+steps:
+
+- task: DotNetCoreInstaller@0
+  inputs:
+    version: '2.1.302'
+
+- script: |
+#    dotnet build --configuration $(buildConfiguration)
+    dotnet test $(testProject) --configuration $(buildConfiguration) --logger trx
+#    dotnet publish --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
+
+- task: PublishTestResults@2
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
+
+#- task: PublishBuildArtifacts@1
