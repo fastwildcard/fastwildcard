@@ -12,7 +12,7 @@ steps:
   inputs:
     version: '2.1.302'
 
-- script: |
+- script: #|
 #    dotnet build --configuration $(buildConfiguration)
     dotnet test $(testProject) --configuration $(buildConfiguration) --logger trx
 #    dotnet publish --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
