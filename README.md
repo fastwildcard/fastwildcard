@@ -1,6 +1,8 @@
 # FastWildcard
 
+[![NuGet](https://img.shields.io/nuget/v/fastwildcard.svg)](https://www.nuget.org/packages/FastWildcard)
 [![Build status](https://ci.appveyor.com/api/projects/status/94xf2m1qnljqe431?svg=true)](https://ci.appveyor.com/project/alexangas/fastwildcard)
+[![Semantic Versioning](https://img.shields.io/badge/semver-2.0.0-3D9FE0.svg)](http://semver.org/)
 
 A fast and robust wildcard matching library for .NET Standard.
 
