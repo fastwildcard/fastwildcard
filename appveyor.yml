@@ -114,12 +114,12 @@ build_script:
         dotnet pack $env:SRC_PROJECT --configuration $env:BUILD_CONFIGURATION
     }
 test_script:
-- cmd: dotnet test %TEST_PROJECT% --configuration %BUILD_CONFIGURATION% --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='%APPVEYOR_BUILD_FOLDER%/coverage.xml'
+- cmd: dotnet test %TEST_PROJECT% --configuration %BUILD_CONFIGURATION% --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='../../coverage.xml'
 after_test:
   - ps: |
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
       Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-      bash codecov.sh -f "$($env:APPVEYOR_BUILD_FOLDER)/coverage.xml"
+      bash codecov.sh -f "coverage.xml"
 artifacts:
 - path: '**\*.nupkg'
   name: NuGet Package
