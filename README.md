@@ -3,6 +3,7 @@
 [![NuGet](https://img.shields.io/nuget/v/fastwildcard.svg)](https://www.nuget.org/packages/FastWildcard)
 [![Build status](https://ci.appveyor.com/api/projects/status/94xf2m1qnljqe431?svg=true)](https://ci.appveyor.com/project/alexangas/fastwildcard)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/34a2ab4c49264b7aba88e7cb92fbaee0)](https://www.codacy.com/app/alexangas/fastwildcard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=fastwildcard/fastwildcard&amp;utm_campaign=Badge_Grade)
+[![codecov](https://codecov.io/gh/fastwildcard/fastwildcard/branch/master/graph/badge.svg)](https://codecov.io/gh/fastwildcard/fastwildcard)
 [![Semantic Versioning](https://img.shields.io/badge/semver-2.0.0-3D9FE0.svg)](http://semver.org/)
 
 A fast and robust wildcard matching library for .NET Standard.
