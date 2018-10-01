@@ -64,6 +64,9 @@ namespace FastWildcard.Tests
 
         [Theory]
         [InlineData("", "*")]
+        [InlineData(" ", "*")]
+        [InlineData(" ", "**")]
+        [InlineData(" ", "***")]
         public void MultiCharacterWildcard_WithMatchAndLengthEdgeCases_ReturnsTrue(string str, string pattern)
         {
             var result = FastWildcard.IsMatch(str, pattern);
@@ -93,6 +96,9 @@ namespace FastWildcard.Tests
         [InlineData("abc", "a*bc")]
         [InlineData("abc", "*abc")]
         [InlineData("abc", "abc*")]
+        [InlineData("abc", "*a*")]
+        [InlineData("abc", "*b*")]
+        [InlineData("abc", "*c*")]
         [InlineData("abc", "a*bc*de")]
         [InlineData("abcde", "a*b*c*d*e")]
         public void MultiCharacterWildcard_WithBlank_ReturnsTrue(string str, string pattern)
@@ -122,6 +128,18 @@ namespace FastWildcard.Tests
         [InlineData("abcde", "a?*de")]
         [InlineData("aabbccaabbddaabbee", "a*b?cca*b*ee")]
         public void MixedWildcard_WithMatch_ReturnsTrue(string str, string pattern)
+        {
+            var result = FastWildcard.IsMatch(str, pattern);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData(" ", "?*")]
+        [InlineData(" ", "*?")]
+        [InlineData(" ", "*?*")]
+        [InlineData("  ", "*?*?*")]
+        public void MixedWildcard_WithMatchAndLengthEdgeCases_ReturnsTrue(string str, string pattern)
         {
             var result = FastWildcard.IsMatch(str, pattern);
 
