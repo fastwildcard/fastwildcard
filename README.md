@@ -41,6 +41,7 @@ Intel Core i7-7500U CPU 2.70GHz (Kaby Lake), 1 CPU, 4 logical and 2 physical cor
 
 
 ```
+
 |        Method |  Job | Runtime |      Mean |     Error |    StdDev |    Median |
 |-------------- |----- |-------- |----------:|----------:|----------:|----------:|
 |  FastWildcard |  Clr |     Clr |  6.701 ns | 0.1356 ns | 0.1058 ns |  6.710 ns |
@@ -49,7 +50,6 @@ Intel Core i7-7500U CPU 2.70GHz (Kaby Lake), 1 CPU, 4 logical and 2 physical cor
 |  FastWildcard | Core |    Core |  8.865 ns | 1.1381 ns | 1.0089 ns |  8.619 ns |
 |         Regex | Core |    Core | 62.321 ns | 1.2019 ns | 1.0655 ns | 62.290 ns |
 | RegexCompiled | Core |    Core | 62.960 ns | 1.2891 ns | 3.0133 ns | 61.906 ns |
-
 
 ### Cross-library
 
@@ -75,13 +75,13 @@ Intel Core i7-7500U CPU 2.70GHz (Kaby Lake), 1 CPU, 4 logical and 2 physical cor
 Job=Clr  Runtime=Clr  
 
 ```
+
 |        Method |      Mean |     Error |    StdDev |    Median |
 |-------------- |----------:|----------:|----------:|----------:|
 |  FastWildcard |  7.016 ns | 0.3243 ns | 0.7894 ns |  6.635 ns |
 | WildcardMatch | 11.285 ns | 0.2844 ns | 0.4169 ns | 11.175 ns |
 |         Regex | 57.502 ns | 1.1226 ns | 1.0501 ns | 57.316 ns |
 | RegexCompiled | 80.180 ns | 1.5398 ns | 1.4404 ns | 79.957 ns |
-
 
 ## Support details
 
