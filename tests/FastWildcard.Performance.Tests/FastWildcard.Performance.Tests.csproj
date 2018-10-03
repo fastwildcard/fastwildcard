@@ -9,9 +9,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.11.0" />
-    <PackageReference Include="Bogus" Version="22.3.2" />
-    <PackageReference Include="FluentAssertions" Version="5.4.1" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.11.1" />
+    <PackageReference Include="Bogus" Version="24.3.0" />
+    <PackageReference Include="FluentAssertions" Version="5.4.2" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
   </ItemGroup>
