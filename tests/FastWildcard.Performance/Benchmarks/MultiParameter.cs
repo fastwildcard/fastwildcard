@@ -7,24 +7,21 @@ using FastWildcard.Performance.Matchers;
 
 namespace FastWildcard.Performance.Benchmarks
 {
-    [ClrJob]
-    public class StandardLength
+    [CoreJob, ClrJob]
+    public class MultiParameter
     {
-        private const int StringLength = 25;
+        [Params(10, 100)]
+        public int StringLength { get; set; }
+
         private const int SingleCharacterMatchCount = 2;
-        private const int SingleCharacterStart = 0;
-        private const int SingleCharacterEnd = 10;
+
         private const int MultiCharacterMatchCount = 2;
-        private const int MultiCharacterStart = 12;
-        private const int MultiCharacterEnd = 24;
+
         private string _pattern;
         private string _str;
         private FastWildcardMatcher _fastWildcardMatcher;
         private RegexMatcher _regexMatcher;
         private RegexMatcher _regexMatcherCompiled;
-#if !NETCOREAPP
-        private WildcardMatchMatcher _wildcardMatchMatcher;
-#endif
 
         [IterationSetup]
         public void IterationSetup()
@@ -34,12 +31,12 @@ namespace FastWildcard.Performance.Benchmarks
             var random = new Random();
             
             var singleCharacterLocations = Enumerable.Range(0, SingleCharacterMatchCount)
-                .Select(x => random.Next(SingleCharacterStart, SingleCharacterEnd))
+                .Select(x => random.Next(0, StringLength - 1))
                 .ToList();
             singleCharacterLocations.ForEach(x => patternBuilder[x] = '?');
 
             var multiCharacterLocations = Enumerable.Range(0, MultiCharacterMatchCount)
-                .Select(x => random.Next(MultiCharacterStart, MultiCharacterEnd))
+                .Select(x => random.Next(0, StringLength - 1))
                 .ToList();
             multiCharacterLocations.ForEach(x => patternBuilder[x] = '*');
 
@@ -48,9 +45,6 @@ namespace FastWildcard.Performance.Benchmarks
             _fastWildcardMatcher = new FastWildcardMatcher();
             _regexMatcher = new RegexMatcher(_pattern, RegexOptions.None);
             _regexMatcherCompiled = new RegexMatcher(_pattern, RegexOptions.Compiled);
-#if !NETCOREAPP
-            _wildcardMatchMatcher = new WildcardMatchMatcher();
-#endif
 
             _str = new Bogus.Randomizer().AlphaNumeric(StringLength);
         }
@@ -63,10 +57,5 @@ namespace FastWildcard.Performance.Benchmarks
 
         [Benchmark]
         public bool RegexCompiled() => _regexMatcherCompiled.Match(_str);
-
-#if !NETCOREAPP
-        [Benchmark]
-        public bool WildcardMatch() => _wildcardMatchMatcher.Match(_pattern, _str);
-#endif
     }
 }
