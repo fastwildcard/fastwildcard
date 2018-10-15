@@ -8,6 +8,13 @@ namespace FastWildcard.Performance.Benchmarks
     {
         public static string BuildPattern(int patternLength, int singleCharacterCount, int multiCharacterCount)
         {
+            if (patternLength <= 0)
+                throw new ArgumentOutOfRangeException(nameof(patternLength));
+            if (singleCharacterCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(singleCharacterCount));
+            if (multiCharacterCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(multiCharacterCount));
+
             var patternBuilder = new StringBuilder(new Bogus.Randomizer().AlphaNumeric(patternLength));
 
             var random = new Random();
@@ -28,6 +35,9 @@ namespace FastWildcard.Performance.Benchmarks
 
         public static string BuildTestString(int stringLength)
         {
+            if (stringLength <= 0)
+                throw new ArgumentOutOfRangeException(nameof(stringLength));
+
             var str = new Bogus.Randomizer().AlphaNumeric(stringLength);
             return str;
         }
