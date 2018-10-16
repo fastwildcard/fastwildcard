@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using BenchmarkDotNet.Attributes;
 using FastWildcard.Performance.Matchers;
@@ -8,19 +6,17 @@ using FastWildcard.Performance.Matchers;
 namespace FastWildcard.Performance.Benchmarks
 {
     [ClrJob]
+    [MemoryDiagnoser]
     public class LibraryComparison
     {
-        [Params(10, 500)]
+        [Params(10, 50)]
         public int PatternLength { get; set; }
 
-        [Params(0, 100)]
+        [Params(2, 5)]
         public int SingleCharacterCount { get; set; }
 
-        [Params(0, 20)]
+        [Params(1, 3)]
         public int MultiCharacterCount { get; set; }
-
-        [Params(10, 1000)]
-        public int StringLength { get; set; }
 
         private string _pattern;
         private string _str;
@@ -34,12 +30,9 @@ namespace FastWildcard.Performance.Benchmarks
         [IterationSetup]
         public void IterationSetup()
         {
-            var patternLength = Math.Min(PatternLength, StringLength);
-            _pattern = IterationBuilder.BuildPattern(patternLength,
-                Math.Min(SingleCharacterCount, patternLength),
-                Math.Min(MultiCharacterCount, patternLength));
+            (_pattern, _, _) = IterationBuilder.BuildPattern(PatternLength, SingleCharacterCount, MultiCharacterCount);
 
-            _str = IterationBuilder.BuildTestString(StringLength);
+            _str = IterationBuilder.BuildTestString(_pattern);
 
             _fastWildcardMatcher = new FastWildcardMatcher();
             _regexMatcher = new RegexMatcher(_pattern, RegexOptions.None);
