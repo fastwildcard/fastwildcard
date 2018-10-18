@@ -290,3 +290,6 @@ __pycache__/
 # BenchmarkDotNet
 **/BenchmarkDotNet.Artifacts/
 coverage.xml
+
+# Include all reports
+!reports/**/*
