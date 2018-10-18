@@ -21,8 +21,8 @@
     <summary>A fast and robust wildcard matching library for .NET.</summary>
     <description>
       A wildcard matching library for .NET Core 2.x, and .NET Standard 1.3/2.0.
-      Fast: developed with regular benchmarking and performance analysis to provide the best speed possible!
       Robust: extensively unit tested to be reliable and predictable - no edge cases!
+      Fast: developed with regular benchmarking and performance analysis to provide the best speed possible!
     </description>
     <language>en-US</language>
     <releaseNotes>Please see https://github.com/fastwildcard/fastwildcard/releases/ for release notes.</releaseNotes>

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using BenchmarkDotNet.Attributes;
 using FastWildcard.Performance.Matchers;
@@ -8,15 +6,18 @@ using FastWildcard.Performance.Matchers;
 namespace FastWildcard.Performance.Benchmarks
 {
     [ClrJob]
-    public class StandardLength
+    [MemoryDiagnoser]
+    public class LibraryComparison
     {
-        private const int StringLength = 25;
-        private const int SingleCharacterMatchCount = 2;
-        private const int SingleCharacterStart = 0;
-        private const int SingleCharacterEnd = 10;
-        private const int MultiCharacterMatchCount = 2;
-        private const int MultiCharacterStart = 12;
-        private const int MultiCharacterEnd = 24;
+        [Params(10, 50)]
+        public int PatternLength { get; set; }
+
+        [Params(2, 5)]
+        public int SingleCharacterCount { get; set; }
+
+        [Params(1, 3)]
+        public int MultiCharacterCount { get; set; }
+
         private string _pattern;
         private string _str;
         private FastWildcardMatcher _fastWildcardMatcher;
@@ -29,21 +30,9 @@ namespace FastWildcard.Performance.Benchmarks
         [IterationSetup]
         public void IterationSetup()
         {
-            var patternBuilder = new StringBuilder(new Bogus.Randomizer().AlphaNumeric(StringLength));
+            (_pattern, _, _) = IterationBuilder.BuildPattern(PatternLength, SingleCharacterCount, MultiCharacterCount);
 
-            var random = new Random();
-            
-            var singleCharacterLocations = Enumerable.Range(0, SingleCharacterMatchCount)
-                .Select(x => random.Next(SingleCharacterStart, SingleCharacterEnd))
-                .ToList();
-            singleCharacterLocations.ForEach(x => patternBuilder[x] = '?');
-
-            var multiCharacterLocations = Enumerable.Range(0, MultiCharacterMatchCount)
-                .Select(x => random.Next(MultiCharacterStart, MultiCharacterEnd))
-                .ToList();
-            multiCharacterLocations.ForEach(x => patternBuilder[x] = '*');
-
-            _pattern = patternBuilder.ToString();
+            _str = IterationBuilder.BuildTestString(_pattern);
 
             _fastWildcardMatcher = new FastWildcardMatcher();
             _regexMatcher = new RegexMatcher(_pattern, RegexOptions.None);
@@ -51,8 +40,6 @@ namespace FastWildcard.Performance.Benchmarks
 #if !NETCOREAPP
             _wildcardMatchMatcher = new WildcardMatchMatcher();
 #endif
-
-            _str = new Bogus.Randomizer().AlphaNumeric(StringLength);
         }
 
         [Benchmark]
