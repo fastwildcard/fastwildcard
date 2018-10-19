@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using BenchmarkDotNet.Attributes;
 using FastWildcard.Performance.Matchers;
 
 namespace FastWildcard.Performance.Benchmarks
 {
     [CoreJob]
+    [InvocationCount(100_000)]
     public class MultiParameter
     {
         [Params(10, 100, 500, 1000)]
@@ -20,8 +20,6 @@ namespace FastWildcard.Performance.Benchmarks
         private string _pattern;
         private string _str;
         private FastWildcardMatcher _fastWildcardMatcher;
-        private RegexMatcher _regexMatcher;
-        private RegexMatcher _regexMatcherCompiled;
 
         [IterationSetup]
         public void IterationSetup()
@@ -31,17 +29,9 @@ namespace FastWildcard.Performance.Benchmarks
             _str = IterationBuilder.BuildTestString(_pattern);
 
             _fastWildcardMatcher = new FastWildcardMatcher();
-            _regexMatcher = new RegexMatcher(_pattern, RegexOptions.None);
-            _regexMatcherCompiled = new RegexMatcher(_pattern, RegexOptions.Compiled);
         }
 
         [Benchmark]
         public bool FastWildcard() => _fastWildcardMatcher.Match(_str, _pattern);
-
-        [Benchmark]
-        public bool Regex() => _regexMatcher.Match(_str);
-
-        [Benchmark]
-        public bool RegexCompiled() => _regexMatcherCompiled.Match(_str);
     }
 }

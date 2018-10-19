@@ -7,9 +7,7 @@ namespace FastWildcard.Performance
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<LibraryComparison>();
-            BenchmarkRunner.Run<MultiParameter>();
-            BenchmarkRunner.Run<PlatformComparison>();
+            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
         }
     }
 }

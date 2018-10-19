@@ -33,7 +33,7 @@ namespace FastWildcard
             }
 
             // Empty string does not match
-            if (str == "")
+            if (str.Length == 0)
             {
                 return false;
             }
@@ -92,9 +92,9 @@ namespace FastWildcard
                     skipStringEndIndex = nextWildcardIndex - 1;
                 }
 
+                int skipToStringIndex;
                 var skipToString = pattern.Substring(patternIndex + 1, skipStringEndIndex - patternIndex);
-
-                var skipToStringIndex = str.IndexOf(skipToString, strIndex, StringComparison.Ordinal);
+                skipToStringIndex = str.IndexOf(skipToString, strIndex, StringComparison.Ordinal);
                 if (skipToStringIndex == -1)
                 {
                     return false;
