@@ -8,11 +8,25 @@ namespace FastWildcard
 
         /// <summary>
         /// Returns if the input string <paramref name="str"/> matches the given wildcard pattern <paramref name="pattern"/>.
+        /// Uses default <see cref="MatchSettings"/>.
         /// </summary>
         /// <param name="str">Input string to match on</param>
-        /// <param name="pattern">Wildcard pattern to use</param>
+        /// <param name="pattern">Wildcard pattern to match against</param>
         /// <returns>True if a match is found, false otherwise</returns>
         public static bool IsMatch(string str, string pattern)
+        {
+            return IsMatch(str, pattern, new MatchSettings());
+        }
+
+        /// <summary>
+        /// Returns if the input string <paramref name="str"/> matches the given wildcard pattern <paramref name="pattern"/>.
+        /// Uses the supplied <see cref="MatchSettings"/>.
+        /// </summary>
+        /// <param name="str">Input string to match on</param>
+        /// <param name="pattern">Wildcard pattern to match with</param>
+        /// <param name="matchSettings">Match settings to use</param>
+        /// <returns>True if a match is found, false otherwise</returns>
+        public static bool IsMatch(string str, string pattern, MatchSettings matchSettings)
         {
             // Pattern must contain something
             if (String.IsNullOrEmpty(pattern))
@@ -55,7 +69,7 @@ namespace FastWildcard
                 }
 
                 // Character match
-                if (patternCh == str[strIndex])
+                if (String.Equals(patternCh.ToString(), str[strIndex].ToString(), matchSettings.StringComparison))
                 {
                     strIndex++;
                     continue;
@@ -94,7 +108,7 @@ namespace FastWildcard
 
                 int skipToStringIndex;
                 var skipToString = pattern.Substring(patternIndex + 1, skipStringEndIndex - patternIndex);
-                skipToStringIndex = str.IndexOf(skipToString, strIndex, StringComparison.Ordinal);
+                skipToStringIndex = str.IndexOf(skipToString, strIndex, matchSettings.StringComparison);
                 if (skipToStringIndex == -1)
                 {
                     return false;
