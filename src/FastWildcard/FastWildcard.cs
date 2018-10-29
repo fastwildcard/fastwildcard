@@ -4,7 +4,10 @@ namespace FastWildcard
 {
     public class FastWildcard
     {
-        private static readonly char[] WildcardCharacters = {'?', '*'};
+        private const char SingleWildcardCharacter = '?';
+        private const char MultiWildcardCharacter = '*';
+
+        private static readonly char[] WildcardCharacters = {SingleWildcardCharacter, MultiWildcardCharacter};
 
         /// <summary>
         /// Returns if the input string <paramref name="str"/> matches the given wildcard pattern <paramref name="pattern"/>.
@@ -28,6 +31,11 @@ namespace FastWildcard
         /// <returns>True if a match is found, false otherwise</returns>
         public static bool IsMatch(string str, string pattern, MatchSettings matchSettings)
         {
+#if NETCOREAPP2_1 || NETCOREAPP2_2
+            var singleWildcardSpan = SingleWildcardCharacter.ToString().AsSpan();
+            var multiWildcardSpan = MultiWildcardCharacter.ToString().AsSpan();
+#endif
+
             // Pattern must contain something
             if (String.IsNullOrEmpty(pattern))
             {
@@ -52,10 +60,19 @@ namespace FastWildcard
                 return false;
             }
 
+#if NETCOREAPP2_1 || NETCOREAPP2_2
+            var strSpan = str.AsSpan();
+            var patternSpan = pattern.AsSpan();
+#endif
+
             var strIndex = 0;
+
             for (var patternIndex = 0; patternIndex < pattern.Length; patternIndex++)
             {
                 var patternCh = pattern[patternIndex];
+#if NETCOREAPP2_1 || NETCOREAPP2_2
+                var patternChSpan = patternSpan.Slice(patternIndex, 1);
+#endif
 
                 if (strIndex >= str.Length)
                 {
@@ -69,7 +86,13 @@ namespace FastWildcard
                 }
 
                 // Character match
-                if (String.Equals(patternCh.ToString(), str[strIndex].ToString(), matchSettings.StringComparison))
+#if NETCOREAPP2_1 || NETCOREAPP2_2
+                var strAtIndex = strSpan.Slice(strIndex, 1);
+                if (patternChSpan.Equals(strAtIndex, matchSettings.StringComparison))
+#else
+                var strAtIndex = str[strIndex].ToString();
+                if (patternCh.ToString().Equals(strAtIndex, matchSettings.StringComparison))
+#endif
                 {
                     strIndex++;
                     continue;
