@@ -21,8 +21,8 @@ namespace FastWildcard.Performance.Benchmarks
         private string _str;
         private FastWildcardMatcher _fastWildcardMatcher;
 
-        [IterationSetup]
-        public void IterationSetup()
+        [GlobalSetup]
+        public void GlobalSetup()
         {
             (_pattern, _, _) = IterationBuilder.BuildPattern(PatternLength, SingleCharacterCount, MultiCharacterCount);
 
