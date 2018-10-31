@@ -31,11 +31,6 @@ namespace FastWildcard
         /// <returns>True if a match is found, false otherwise</returns>
         public static bool IsMatch(string str, string pattern, MatchSettings matchSettings)
         {
-#if NETCOREAPP2_1 || NETCOREAPP2_2
-            var singleWildcardSpan = SingleWildcardCharacter.ToString().AsSpan();
-            var multiWildcardSpan = MultiWildcardCharacter.ToString().AsSpan();
-#endif
-
             // Pattern must contain something
             if (String.IsNullOrEmpty(pattern))
             {
@@ -130,8 +125,15 @@ namespace FastWildcard
                 }
 
                 int skipToStringIndex;
-                var skipToString = pattern.Substring(patternIndex + 1, skipStringEndIndex - patternIndex);
+                var skipToStringStartIndex = patternIndex + 1;
+                var skipToStringLength = skipStringEndIndex - patternIndex;
+#if NETCOREAPP2_1 || NETCOREAPP2_2
+                var skipToString = patternSpan.Slice(skipToStringStartIndex, skipToStringLength);
+                skipToStringIndex = strSpan.Slice(strIndex).IndexOf(skipToString, matchSettings.StringComparison) + strIndex;
+#else
+                var skipToString = pattern.Substring(skipToStringStartIndex, skipToStringLength);
                 skipToStringIndex = str.IndexOf(skipToString, strIndex, matchSettings.StringComparison);
+#endif
                 if (skipToStringIndex == -1)
                 {
                     return false;
