@@ -28,8 +28,8 @@ namespace FastWildcard.Performance.Benchmarks
         private WildcardMatchMatcher _wildcardMatchMatcher;
 #endif
 
-        [IterationSetup]
-        public void IterationSetup()
+        [GlobalSetup]
+        public void GlobalSetup()
         {
             (_pattern, _, _) = IterationBuilder.BuildPattern(PatternLength, SingleCharacterCount, MultiCharacterCount);
 
