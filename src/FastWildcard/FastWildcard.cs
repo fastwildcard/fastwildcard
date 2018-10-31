@@ -4,15 +4,32 @@ namespace FastWildcard
 {
     public class FastWildcard
     {
-        private static readonly char[] WildcardCharacters = {'?', '*'};
+        private const char SingleWildcardCharacter = '?';
+        private const char MultiWildcardCharacter = '*';
+
+        private static readonly char[] WildcardCharacters = {SingleWildcardCharacter, MultiWildcardCharacter};
 
         /// <summary>
         /// Returns if the input string <paramref name="str"/> matches the given wildcard pattern <paramref name="pattern"/>.
+        /// Uses default <see cref="MatchSettings"/>.
         /// </summary>
         /// <param name="str">Input string to match on</param>
-        /// <param name="pattern">Wildcard pattern to use</param>
+        /// <param name="pattern">Wildcard pattern to match against</param>
         /// <returns>True if a match is found, false otherwise</returns>
         public static bool IsMatch(string str, string pattern)
+        {
+            return IsMatch(str, pattern, new MatchSettings());
+        }
+
+        /// <summary>
+        /// Returns if the input string <paramref name="str"/> matches the given wildcard pattern <paramref name="pattern"/>.
+        /// Uses the supplied <see cref="MatchSettings"/>.
+        /// </summary>
+        /// <param name="str">Input string to match on</param>
+        /// <param name="pattern">Wildcard pattern to match with</param>
+        /// <param name="matchSettings">Match settings to use</param>
+        /// <returns>True if a match is found, false otherwise</returns>
+        public static bool IsMatch(string str, string pattern, MatchSettings matchSettings)
         {
             // Pattern must contain something
             if (String.IsNullOrEmpty(pattern))
@@ -38,10 +55,19 @@ namespace FastWildcard
                 return false;
             }
 
+#if NETCOREAPP2_1 || NETCOREAPP2_2
+            var strSpan = str.AsSpan();
+            var patternSpan = pattern.AsSpan();
+#endif
+
             var strIndex = 0;
+
             for (var patternIndex = 0; patternIndex < pattern.Length; patternIndex++)
             {
                 var patternCh = pattern[patternIndex];
+#if NETCOREAPP2_1 || NETCOREAPP2_2
+                var patternChSpan = patternSpan.Slice(patternIndex, 1);
+#endif
 
                 if (strIndex >= str.Length)
                 {
@@ -55,7 +81,13 @@ namespace FastWildcard
                 }
 
                 // Character match
-                if (patternCh == str[strIndex])
+#if NETCOREAPP2_1 || NETCOREAPP2_2
+                var strAtIndex = strSpan.Slice(strIndex, 1);
+                if (patternChSpan.Equals(strAtIndex, matchSettings.StringComparison))
+#else
+                var strAtIndex = str[strIndex].ToString();
+                if (patternCh.ToString().Equals(strAtIndex, matchSettings.StringComparison))
+#endif
                 {
                     strIndex++;
                     continue;
@@ -93,8 +125,15 @@ namespace FastWildcard
                 }
 
                 int skipToStringIndex;
-                var skipToString = pattern.Substring(patternIndex + 1, skipStringEndIndex - patternIndex);
-                skipToStringIndex = str.IndexOf(skipToString, strIndex, StringComparison.Ordinal);
+                var skipToStringStartIndex = patternIndex + 1;
+                var skipToStringLength = skipStringEndIndex - patternIndex;
+#if NETCOREAPP2_1 || NETCOREAPP2_2
+                var skipToString = patternSpan.Slice(skipToStringStartIndex, skipToStringLength);
+                skipToStringIndex = strSpan.Slice(strIndex).IndexOf(skipToString, matchSettings.StringComparison) + strIndex;
+#else
+                var skipToString = pattern.Substring(skipToStringStartIndex, skipToStringLength);
+                skipToStringIndex = str.IndexOf(skipToString, strIndex, matchSettings.StringComparison);
+#endif
                 if (skipToStringIndex == -1)
                 {
                     return false;
