@@ -13,6 +13,7 @@
     <owners>alexangas</owners>
     <licenseUrl>https://github.com/fastwildcard/fastwildcard/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/fastwildcard/fastwildcard</projectUrl>
+    <iconUrl>https://github.com/fastwildcard/fastwildcard/raw/master/fastwildcard.png</iconUrl>
     <repository>
       <type>git</type>
       <url>https://github.com/fastwildcard/fastwildcard.git</url>
