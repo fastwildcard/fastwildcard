@@ -6,7 +6,6 @@ using FastWildcard.Performance.Matchers;
 namespace FastWildcard.Performance.Benchmarks
 {
     [Config(typeof(CompareRuntimesConfig))]
-    [InvocationCount(1_000_000)]
     [MemoryDiagnoser]
     public class RuntimeComparison
     {

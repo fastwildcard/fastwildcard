@@ -6,7 +6,6 @@ using FastWildcard.Performance.Matchers;
 namespace FastWildcard.Performance.Benchmarks
 {
     [ClrJob]
-    [InvocationCount(100_000)]
     [MemoryDiagnoser]
     public class LibraryComparison
     {
