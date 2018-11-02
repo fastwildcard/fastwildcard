@@ -1,14 +1,14 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
-using FastWildcard.Performance.Benchmarks.Configs;
-using FastWildcard.Performance.Matchers;
+using FastWildcard.Performance.Benchmarks;
+using FastWildcard.Performance.NuGet.Benchmarks.Configs;
+using FastWildcard.Performance.NuGet.Benchmarks.Matchers;
 
-namespace FastWildcard.Performance.Benchmarks
+namespace FastWildcard.Performance.NuGet.Benchmarks
 {
-    [Config(typeof(CompareRuntimesConfig))]
-    [InvocationCount(1_000_000)]
+    [Config(typeof(CompareVersionsConfig))]
     [MemoryDiagnoser]
-    public class RuntimeComparison
+    public class VersionComparison
     {
         [Params(100)]
         public int PatternLength { get; set; }
