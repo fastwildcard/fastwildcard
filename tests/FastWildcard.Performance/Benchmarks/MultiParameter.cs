@@ -5,7 +5,6 @@ using FastWildcard.Performance.Matchers;
 namespace FastWildcard.Performance.Benchmarks
 {
     [CoreJob]
-    [InvocationCount(100_000)]
     public class MultiParameter
     {
         [Params(10, 100, 500, 1000)]
