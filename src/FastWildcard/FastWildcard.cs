@@ -55,7 +55,7 @@ namespace FastWildcard
                 return false;
             }
 
-#if NETCOREAPP2_1 || NETCOREAPP2_2
+#if NETCOREAPP2_1 || NETCOREAPP2_2 || NETSTANDARD2_1
             var strSpan = str.AsSpan();
             var patternSpan = pattern.AsSpan();
 #endif
@@ -65,7 +65,7 @@ namespace FastWildcard
             for (var patternIndex = 0; patternIndex < pattern.Length; patternIndex++)
             {
                 var patternCh = pattern[patternIndex];
-#if NETCOREAPP2_1 || NETCOREAPP2_2
+#if NETCOREAPP2_1 || NETCOREAPP2_2 || NETSTANDARD2_1
                 var patternChSpan = patternSpan.Slice(patternIndex, 1);
 #endif
 
@@ -81,7 +81,7 @@ namespace FastWildcard
                 }
 
                 // Character match
-#if NETCOREAPP2_1 || NETCOREAPP2_2
+#if NETCOREAPP2_1 || NETCOREAPP2_2 || NETSTANDARD2_1
                 var strAtIndex = strSpan.Slice(strIndex, 1);
                 if (patternChSpan.Equals(strAtIndex, matchSettings.StringComparison))
 #else
@@ -127,7 +127,7 @@ namespace FastWildcard
                 int skipToStringIndex;
                 var skipToStringStartIndex = patternIndex + 1;
                 var skipToStringLength = skipStringEndIndex - patternIndex;
-#if NETCOREAPP2_1 || NETCOREAPP2_2
+#if NETCOREAPP2_1 || NETCOREAPP2_2 || NETSTANDARD2_1
                 var skipToString = patternSpan.Slice(skipToStringStartIndex, skipToStringLength);
                 skipToStringIndex = strSpan.Slice(strIndex).IndexOf(skipToString, matchSettings.StringComparison) + strIndex;
 #else
