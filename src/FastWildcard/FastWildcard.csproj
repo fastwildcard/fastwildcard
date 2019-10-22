@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.3;netstandard2.0;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3;netstandard2.0;netcoreapp2.1;netstandard2.1</TargetFrameworks>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
     <id>FastWildcard</id>
-    <version>3.1.0</version>
+    <version>3.2.0</version>
     <title>Fast Wildcard</title>
     <authors>Alex Angas</authors>
     <owners>alexangas</owners>
