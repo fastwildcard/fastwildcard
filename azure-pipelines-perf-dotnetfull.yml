@@ -3,6 +3,22 @@ pool:
 
 steps:
 - task: DotNetCoreCLI@2
+  displayName: 'Build net461'
   inputs:
     command: 'build'
     projects: '.\tests\FastWildcard.Performance'
+    arguments: '-c Release -f net461 --no-incremental -r win-x64 -v n'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build netcoreapp2.1'
+  inputs:
+    command: 'build'
+    projects: '.\tests\FastWildcard.Performance'
+    arguments: '-c Release -f netcoreapp2.1 --no-incremental -r win-x64 -v n'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build netcoreapp3.0'
+  inputs:
+    command: 'build'
+    projects: '.\tests\FastWildcard.Performance'
+    arguments: '-c Release -f netcoreapp3.0 --no-incremental -r win-x64 -v n'
