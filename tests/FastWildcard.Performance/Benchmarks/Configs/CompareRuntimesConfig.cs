@@ -8,9 +8,9 @@ namespace FastWildcard.Performance.Benchmarks.Configs
     {
         public CompareRuntimesConfig()
         {
-            Add(Job.Default.With(CsProjCoreToolchain.NetCoreApp22));
+            Add(Job.Default.With(CsProjCoreToolchain.NetCoreApp30));
             Add(Job.Default.With(CsProjCoreToolchain.NetCoreApp21));
-            Add(Job.Default.With(CsProjCoreToolchain.NetCoreApp20));
+            Add(Job.Default.With(CsProjClassicNetToolchain.From("net48")));
             Add(Job.Default.With(CsProjClassicNetToolchain.Net472));
             Add(Job.Default.With(CsProjClassicNetToolchain.Net461));
         }
