@@ -1,0 +1,17 @@
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'Build'
+  inputs:
+    command: 'build'
+    projects: '.\tests\FastWildcard.Performance'
+    arguments: '-c Release -f netcoreapp3.0 --no-incremental -r win-x64 -v n -o $(Build.ArtifactStagingDirectory)\build'
+
+- task: CopyFiles@2
+  displayName: 'Copy source files'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)\build'
