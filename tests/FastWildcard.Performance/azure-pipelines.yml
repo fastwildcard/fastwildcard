@@ -7,20 +7,27 @@ steps:
   inputs:
     command: 'build'
     projects: '.\tests\FastWildcard.Performance'
-    arguments: '-c Release -f netcoreapp3.0 --no-incremental -r win-x64 -v n -o $(Build.ArtifactStagingDirectory)\build'
+    arguments: '-c Release -f netcoreapp3.0 --no-incremental -r win-x64 -v n -o $(Build.BinariesDirectory)\build'
 
 - task: CopyFiles@2
   displayName: 'Copy source files'
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)\build'
+    TargetFolder: '$(Build.BinariesDirectory)\build'
 
 - task: ArchiveFiles@2
   displayName: 'Archive build'
   inputs:
-    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)\build'
+    rootFolderOrFile: '$(Build.BinariesDirectory)\build'
     includeRootFolder: true
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/FastWildcard.Performance-$(Build.BuildId).zip'
     replaceExistingArchive: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
