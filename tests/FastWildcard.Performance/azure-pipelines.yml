@@ -15,3 +15,12 @@ steps:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: '**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)\build'
+
+- task: ArchiveFiles@2
+  displayName: 'Archive build'
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)\build'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/FastWildcard.Performance-$(Build.BuildId).zip'
+    replaceExistingArchive: true
