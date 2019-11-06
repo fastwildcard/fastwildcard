@@ -25,6 +25,17 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/FastWildcard.Performance-$(Build.BuildId).zip'
     replaceExistingArchive: true
 
+- task: PowerShell@2
+  displayName: 'Download ARM template'
+  inputs:
+    targetType: 'inline'
+    script: |
+      Invoke-WebRequest https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-winrm-windows/azuredeploy.json -OutFile .\azuredeploy.json
+      
+      Invoke-WebRequest https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-winrm-windows/azuredeploy.parameters.json -OutFile .\azuredeploy.parameters.json
+    pwsh: true
+    workingDirectory: '$(Build.ArtifactStagingDirectory)'
+
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts'
   inputs:
