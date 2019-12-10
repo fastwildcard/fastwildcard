@@ -1,10 +1,11 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using FastWildcard.Performance.Matchers;
 
 namespace FastWildcard.Performance.Benchmarks
 {
-    [CoreJob]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     public class MultiParameter
     {
         [Params(10, 100, 500, 1000)]
