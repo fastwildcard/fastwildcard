@@ -1,0 +1,41 @@
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'Build'
+  inputs:
+    command: 'build'
+    projects: '.\tests\FastWildcard.Performance'
+    arguments: '-c Release -f netcoreapp3.1 --no-incremental -r win-x64 -v n -o $(Build.BinariesDirectory)\build'
+
+- task: CopyFiles@2
+  displayName: 'Copy source files'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '**'
+    TargetFolder: '$(Build.BinariesDirectory)\build'
+
+- task: ArchiveFiles@2
+  displayName: 'Archive build'
+  inputs:
+    rootFolderOrFile: '$(Build.BinariesDirectory)\build'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/FastWildcard.Performance-$(Build.BuildId).zip'
+    replaceExistingArchive: true
+
+- task: CopyFiles@2
+  displayName: 'Copy ARM template'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '**/*/azuredeploy*.json'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    flattenFolders: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
