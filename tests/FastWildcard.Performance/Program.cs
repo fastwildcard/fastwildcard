@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Running;
-using FastWildcard.Performance.Benchmarks;
 
 namespace FastWildcard.Performance
 {

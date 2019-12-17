@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using FastWildcard.Performance.Matchers;
 
 namespace FastWildcard.Performance.Benchmarks
 {
-    [ClrJob]
+    [SimpleJob(RuntimeMoniker.Net461)]
     [MemoryDiagnoser]
     public class LibraryComparison
     {

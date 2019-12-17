@@ -1,11 +1,15 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
-using FastWildcard.Performance.Benchmarks.Configs;
+using BenchmarkDotNet.Jobs;
 using FastWildcard.Performance.Matchers;
 
 namespace FastWildcard.Performance.Benchmarks
 {
-    [Config(typeof(CompareRuntimesConfig))]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp21)]
+    [SimpleJob(RuntimeMoniker.Net48)]
+    [SimpleJob(RuntimeMoniker.Net472)]
+    [SimpleJob(RuntimeMoniker.Net461)]
     [MemoryDiagnoser]
     public class RuntimeComparison
     {
