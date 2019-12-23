@@ -7,7 +7,7 @@ steps:
   inputs:
     command: 'build'
     projects: '.\tests\FastWildcard.Performance'
-    arguments: '-c Release -f netcoreapp3.1 --no-incremental -r win-x64 -v n -o $(Build.BinariesDirectory)\build'
+    arguments: '-c Release --no-incremental --verbosity normal --output $(Build.BinariesDirectory)\build'
 
 - task: CopyFiles@2
   displayName: 'Copy source files'
