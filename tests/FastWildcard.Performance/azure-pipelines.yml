@@ -7,7 +7,7 @@ steps:
   inputs:
     command: 'build'
     projects: '.\tests\FastWildcard.Performance'
-    arguments: '-c Release --no-incremental --verbosity normal --output $(Build.BinariesDirectory)\build'
+    arguments: '-c Release --runtime win-x64 --no-incremental --verbosity normal --output $(Build.BinariesDirectory)\build'
 
 - task: CopyFiles@2
   displayName: 'Copy source files'
