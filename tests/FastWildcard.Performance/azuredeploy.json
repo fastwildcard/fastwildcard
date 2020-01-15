@@ -20,13 +20,6 @@
         "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
       }
     },
-    "windowsOSVersion": {
-      "type": "string",
-      "defaultValue": "2019-Datacenter-smalldisk",
-      "metadata": {
-        "description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version."
-      }
-    },
     "vmName": {
       "type": "string",
       "defaultValue": "MyVM",
@@ -34,23 +27,27 @@
         "description": "The name for the VM."
       }
     },
+    "vmSize":  {
+      "type": "string",
+      "defaultValue": "Standard_A2"
+    },
     "nicName": {
       "type": "string",
-      "defaultValue": "myVMNic",
+      "defaultValue": "[concat(parameters('vmName'), '-ni')]",
       "metadata": {
         "description": "The name for the VM's NIC."
       }
     },
     "virtualNetworkName": {
       "type": "string",
-      "defaultValue": "MyVNET",
+      "defaultValue": "[concat(parameters('vmName'), '-vnet')]",
       "metadata": {
         "description": "The name for the VM's VNET."
       }
     },
     "publicIPAddressName": {
       "type": "string",
-      "defaultValue": "myPublicIP",
+      "defaultValue": "[concat(parameters('vmName'), '-ip')]",
       "metadata": {
         "description": "The name for the VM's public IP."
       }
@@ -71,8 +68,9 @@
     }
   },
   "variables": {
-    "imagePublisher": "MicrosoftWindowsServer",
-    "imageOffer": "WindowsServer",
+    "imagePublisher": "microsoftvisualstudio",
+    "imageOffer": "visualstudio2019latest",
+    "imageSku": "vs-2019-comm-latest-ws2019",
     "nicName": "[parameters('nicName')]",
     "addressPrefix": "10.0.0.0/16",
     "subnetName": "[parameters('subnetName')]",
@@ -80,7 +78,7 @@
     "publicIPAddressName": "[parameters('publicIPAddressName')]",
     "publicIPAddressType": "Dynamic",
     "vmName": "[parameters('vmName')]",
-    "vmSize": "Standard_A2",
+    "vmSize": "[parameters('vmSize')]",
     "virtualNetworkName": "[parameters('virtualNetworkName')]",
     "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
     "apiVersion": "2015-06-15",
@@ -167,7 +165,7 @@
           "imageReference": {
             "publisher": "[variables('imagePublisher')]",
             "offer": "[variables('imageOffer')]",
-            "sku": "[parameters('windowsOSVersion')]",
+            "sku": "[variables('imageSku')]",
             "version": "latest"
           },
           "osDisk": {
