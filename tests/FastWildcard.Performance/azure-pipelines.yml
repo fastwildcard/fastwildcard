@@ -25,14 +25,6 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/FastWildcard.Performance-$(Build.BuildId).zip'
     replaceExistingArchive: true
 
-- task: CopyFiles@2
-  displayName: 'Copy ARM template'
-  inputs:
-    SourceFolder: '$(Build.SourcesDirectory)'
-    Contents: '**/*/azuredeploy*.json'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    flattenFolders: true
-
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts'
   inputs:
