@@ -2,6 +2,11 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
+- task: CmdLine@2
+  displayName: 'Shutdown dotnet build server'
+  inputs:
+    script: 'dotnet build-server shutdown'
+
 - task: DotNetCoreCLI@2
   displayName: 'Build'
   inputs:
