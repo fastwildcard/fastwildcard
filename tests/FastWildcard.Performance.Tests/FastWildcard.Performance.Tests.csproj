@@ -11,8 +11,8 @@
   <ItemGroup>
     <PackageReference Include="AutoFixture.Xunit2" Version="4.11.0" />
     <PackageReference Include="BenchmarkDotNet" Version="0.12.0" />
-    <PackageReference Include="Bogus" Version="28.4.3" />
-    <PackageReference Include="FluentAssertions" Version="5.9.0" />
+    <PackageReference Include="Bogus" Version="28.4.4" />
+    <PackageReference Include="FluentAssertions" Version="5.10.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Include="WildcardMatch" Version="1.0.6" />
     <PackageReference Include="xunit" Version="2.4.1" />
