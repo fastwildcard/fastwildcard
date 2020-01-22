@@ -2,17 +2,12 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
-- task: CmdLine@2
-  displayName: 'Shutdown dotnet build server'
-  inputs:
-    script: 'dotnet build-server shutdown'
-
 - task: DotNetCoreCLI@2
   displayName: 'Build'
   inputs:
     command: 'build'
     projects: '.\tests\FastWildcard.Performance'
-    arguments: '-c Release --verbosity normal --output $(Build.BinariesDirectory)\build'
+    arguments: '-c Release --verbosity normal --output $(Build.BinariesDirectory)\build /m:1'
 
 - task: CopyFiles@2
   displayName: 'Copy source files'
