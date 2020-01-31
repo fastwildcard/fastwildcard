@@ -75,6 +75,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [InlineData("aaa", "a*a")]
         [InlineData("abc", "a*c")]
         [InlineData("abcde", "a*e")]
         [InlineData("abcde", "a**e")]
@@ -93,6 +94,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [InlineData("aa", "a*a")]
         [InlineData("abc", "a*bc")]
         [InlineData("abc", "*abc")]
         [InlineData("abc", "abc*")]
@@ -162,6 +164,66 @@ namespace FastWildcard.Tests
         [InlineData("  ", " ")]
         public void NoWildcard_WithNoMatch_ReturnsFalse(string str, string pattern)
         {
+            var result = FastWildcard.IsMatch(str, pattern);
+
+            result.Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData(500)]
+        [InlineData(5000)]
+        [InlineData(50000)]
+        [InlineData(500000)]
+        public void Performance_MatchLength_PatternLengthOfInput(int matchLength)
+        {
+            var str = new string('a', matchLength);
+            var pattern = str;
+
+            var result = FastWildcard.IsMatch(str, pattern);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData(500)]
+        [InlineData(5000)]
+        [InlineData(50000)]
+        [InlineData(500000)]
+        public void Performance_MatchLength_PatternLengthWithWildcard(int matchLength)
+        {
+            var str = new string('a', matchLength);
+            var pattern = "a*a";
+
+            var result = FastWildcard.IsMatch(str, pattern);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData(500)]
+        [InlineData(5000)]
+        [InlineData(50000)]
+        [InlineData(500000)]
+        public void Performance_NoMatchLength_PatternLengthOf1Char(int noMatchLength)
+        {
+            var str = new string('a', noMatchLength);
+            var pattern = new string('b', 1);
+
+            var result = FastWildcard.IsMatch(str, pattern);
+
+            result.Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData(500)]
+        [InlineData(5000)]
+        [InlineData(50000)]
+        [InlineData(500000)]
+        public void Performance_NoMatchLength_PatternLengthWithWildcard(int noMatchLength)
+        {
+            var str = new string('a', noMatchLength);
+            var pattern = "b*b";
+
             var result = FastWildcard.IsMatch(str, pattern);
 
             result.Should().BeFalse();
