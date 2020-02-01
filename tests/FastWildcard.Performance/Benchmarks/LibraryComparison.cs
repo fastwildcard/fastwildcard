@@ -22,6 +22,9 @@ namespace FastWildcard.Performance.Benchmarks
         private string _pattern;
         private string _str;
         private FastWildcardMatcher _fastWildcardMatcher;
+#if !NETCOREAPP2_1
+        private LikeMatcher _likeMatcher;
+#endif
         private RegexMatcher _regexMatcher;
         private RegexMatcher _regexMatcherCompiled;
         private WildcardMatchMatcher _wildcardMatchMatcher;
@@ -34,6 +37,9 @@ namespace FastWildcard.Performance.Benchmarks
             _str = IterationBuilder.BuildTestString(_pattern);
 
             _fastWildcardMatcher = new FastWildcardMatcher();
+#if !NETCOREAPP2_1
+            _likeMatcher = new LikeMatcher();
+#endif
             _regexMatcher = new RegexMatcher(_pattern, RegexOptions.None);
             _regexMatcherCompiled = new RegexMatcher(_pattern, RegexOptions.Compiled);
             _wildcardMatchMatcher = new WildcardMatchMatcher();
@@ -41,6 +47,11 @@ namespace FastWildcard.Performance.Benchmarks
 
         [Benchmark]
         public bool FastWildcard() => _fastWildcardMatcher.Match(_str, _pattern);
+
+#if !NETCOREAPP2_1
+        [Benchmark]
+        public bool Like() => _likeMatcher.Match(_str, _pattern);
+#endif
 
         [Benchmark]
         public bool Regex() => _regexMatcher.Match(_str);

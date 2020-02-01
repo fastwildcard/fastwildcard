@@ -20,7 +20,20 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.12.0" />
     <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.12.0" />
     <PackageReference Include="Bogus" Version="28.4.4" />
+    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="WildcardMatch" Version="1.0.6" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Include="System.Management.Automation">
+      <Version>6.2.4</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
+    <PackageReference Include="System.Management.Automation">
+      <Version>6.2.4</Version>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
