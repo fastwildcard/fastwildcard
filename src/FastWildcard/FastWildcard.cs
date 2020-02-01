@@ -40,7 +40,7 @@ namespace FastWildcard
             // Uninitialised string never matches
             if (str == null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(str));
             }
 
             // Multi character wildcard matches everything
@@ -116,27 +116,22 @@ namespace FastWildcard
                     return true;
                 }
 
-                // Multi character wildcard match - general case
-                var nextWildcardIndex = pattern.IndexOfAny(WildcardCharacters, patternIndex + 1);
-                int skipStringEndIndex;
-                if (nextWildcardIndex == -1)
-                {
-                    skipStringEndIndex = pattern.Length - 1;
-                }
-                else
-                {
-                    skipStringEndIndex = nextWildcardIndex - 1;
-                }
+                // Match pattern to input string character-by-character until the next wildcard (or end of string if there is none)
+                var patternChMatchStartIndex = patternIndex + 1;
 
-                int skipToStringIndex;
-                var skipToStringStartIndex = patternIndex + 1;
-                var skipToStringLength = skipStringEndIndex - patternIndex;
+                var nextWildcardIndex = pattern.IndexOfAny(WildcardCharacters, patternChMatchStartIndex);
+                var patternChMatchEndIndex = nextWildcardIndex == -1
+                    ? pattern.Length - 1
+                    : nextWildcardIndex - 1;
+
+                var patternChMatchLength = patternChMatchEndIndex - patternIndex;
+
 #if (NETSTANDARD || NETCOREAPP) && !NETSTANDARD1_3 && !NETSTANDARD2_0
-                var skipToString = patternSpan.Slice(skipToStringStartIndex, skipToStringLength);
-                skipToStringIndex = strSpan.Slice(strIndex).IndexOf(skipToString, matchSettings.StringComparison) + strIndex;
+                var comparison = patternSpan.Slice(patternChMatchStartIndex, patternChMatchLength);
+                var skipToStringIndex = strSpan.Slice(strIndex).IndexOf(comparison, matchSettings.StringComparison) + strIndex;
 #else
-                var skipToString = pattern.Substring(skipToStringStartIndex, skipToStringLength);
-                skipToStringIndex = str.IndexOf(skipToString, strIndex, matchSettings.StringComparison);
+                var comparison = pattern.Substring(patternChMatchStartIndex, patternChMatchLength);
+                var skipToStringIndex = str.IndexOf(comparison, strIndex, matchSettings.StringComparison);
 #endif
                 if (skipToStringIndex == -1)
                 {
