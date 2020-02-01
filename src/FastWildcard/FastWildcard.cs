@@ -85,8 +85,12 @@ namespace FastWildcard
                 var strAtIndex = strSpan.Slice(strIndex, 1);
                 if (patternChSpan.Equals(strAtIndex, matchSettings.StringComparison))
 #else
-                var strAtIndex = str[strIndex].ToString();
-                if (patternCh.ToString().Equals(strAtIndex, matchSettings.StringComparison))
+                var strAtIndex = str[strIndex];
+                bool patternChEqualsStrAtIndex;
+                patternChEqualsStrAtIndex = matchSettings.StringComparison == StringComparison.Ordinal
+                    ? patternCh.Equals(strAtIndex)
+                    : patternCh.ToString().Equals(strAtIndex.ToString(), matchSettings.StringComparison);
+                if (patternChEqualsStrAtIndex)
 #endif
                 {
                     strIndex++;
