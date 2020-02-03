@@ -82,13 +82,13 @@ namespace FastWildcard
 
                 // Character match
 #if (NETSTANDARD || NETCOREAPP) && !NETSTANDARD1_3 && !NETSTANDARD2_0
-                var strAtIndex = strSpan.Slice(strIndex, 1);
-                if (patternChSpan.Equals(strAtIndex, matchSettings.StringComparison))
+                var strCh = strSpan.Slice(strIndex, 1);
+                if (patternChSpan.Equals(strCh, matchSettings.StringComparison))
 #else
-                var strAtIndex = str[strIndex];
+                var strCh = str[strIndex];
                 var patternChEqualsStrAtIndex = matchSettings.StringComparison == StringComparison.Ordinal
-                    ? patternCh.Equals(strAtIndex)
-                    : patternCh.ToString().Equals(strAtIndex.ToString(), matchSettings.StringComparison);
+                    ? patternCh.Equals(strCh)
+                    : patternCh.ToString().Equals(strCh.ToString(), matchSettings.StringComparison);
                 if (patternChEqualsStrAtIndex)
 #endif
                 {
@@ -132,6 +132,26 @@ namespace FastWildcard
                 var comparison = pattern.Substring(patternChMatchStartIndex, comparisonLength);
                 var skipToStringIndex = str.IndexOf(comparison, strIndex, matchSettings.StringComparison);
 #endif
+
+                // Handle repeated instances of the same character at end of pattern
+                if (comparisonLength == 1 && nextWildcardIndex == -1)
+                {
+                    var skipCandidateIndex = 0;
+                    while (skipCandidateIndex == 0)
+                    {
+                        var skipToStringIndexNew = skipToStringIndex + 1;
+#if (NETSTANDARD || NETCOREAPP) && !NETSTANDARD1_3 && !NETSTANDARD2_0
+                        skipCandidateIndex = strSpan.Slice(skipToStringIndexNew).IndexOf(comparison, matchSettings.StringComparison);
+#else
+                        skipCandidateIndex = str.IndexOf(comparison, skipToStringIndexNew, matchSettings.StringComparison) - (skipToStringIndexNew);
+#endif
+                        if (skipCandidateIndex == 0)
+                        {
+                            skipToStringIndex = skipToStringIndexNew;
+                        }
+                    }
+                }
+
                 if (skipToStringIndex == -1)
                 {
                     return false;

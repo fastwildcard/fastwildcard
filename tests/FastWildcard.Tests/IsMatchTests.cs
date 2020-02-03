@@ -8,18 +8,20 @@ namespace FastWildcard.Tests
     {
         public bool DoMatch(string str, string pattern) =>
 
-            //FastWildcard.IsMatch(str, pattern);
+            FastWildcard.IsMatch(str, pattern);
 
             //System.Text.RegularExpressions.Regex.IsMatch(str, "^" + System.Text.RegularExpressions.Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$");
 
 #if !NETCOREAPP2_1
-            Microsoft.VisualBasic.CompilerServices.LikeOperator.LikeString(str, pattern, Microsoft.VisualBasic.CompareMethod.Text);
+            //Microsoft.VisualBasic.CompilerServices.LikeOperator.LikeString(str, pattern, Microsoft.VisualBasic.CompareMethod.Text);
 #else
-            FastWildcard.IsMatch(str, pattern);
+            //FastWildcard.IsMatch(str, pattern);
 #endif
 
 #if NETCOREAPP
-              //new System.Management.Automation.WildcardPattern(pattern).IsMatch(str);
+            //new System.Management.Automation.WildcardPattern(pattern).IsMatch(str);
+#else
+            //FastWildcard.IsMatch(str, pattern);
 #endif
 
         [Theory]
@@ -97,6 +99,7 @@ namespace FastWildcard.Tests
 
         [Theory]
         [Trait("Category", "Logic")]
+        [InlineData("aaa", "a*a")]
         [InlineData("abc", "a*c")]
         [InlineData("abcde", "a*e")]
         [InlineData("abcde", "a**e")]
@@ -106,6 +109,7 @@ namespace FastWildcard.Tests
         [InlineData("abc/def/ghi", "abc*/ghi")]
         [InlineData("abc/def/ghi", "abc/*/ghi")]
         [InlineData("abc/def/ghi", "*/ghi")]
+        [InlineData("aabbccaabbddaabbee", "a*b*a*e")]
         [InlineData("aabbccaabbddaabbee", "a*b*a*ee")]
         public void MultiCharacterWildcard_WithMatch_ReturnsTrue(string str, string pattern)
         {
@@ -138,7 +142,6 @@ namespace FastWildcard.Tests
         [InlineData("bacde", "*bcde")]
         [InlineData("bbcde", "abcd*")]
         [InlineData("abc", "a*bc*de")]
-        [InlineData("aabbccaabbddaabbee", "a*b*a*e")]
         public void MultiCharacterWildcard_WithNoMatch_ReturnsFalse(string str, string pattern)
         {
             var result = DoMatch(str, pattern);
@@ -190,16 +193,6 @@ namespace FastWildcard.Tests
         [InlineData(" ", "  ")]
         [InlineData("  ", " ")]
         public void NoWildcard_WithNoMatch_ReturnsFalse(string str, string pattern)
-        {
-            var result = DoMatch(str, pattern);
-
-            result.Should().BeFalse();
-        }
-
-        [Theory]
-        [Trait("Category", "Unsupported")]
-        [InlineData("aaa", "a*a")]  // Should the * be taking 0 or 1 character here?
-        public void Unsupported(string str, string pattern)
         {
             var result = DoMatch(str, pattern);
 
