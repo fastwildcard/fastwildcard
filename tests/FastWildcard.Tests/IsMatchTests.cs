@@ -1,7 +1,5 @@
 ﻿using System;
 using FluentAssertions;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 using Xunit;
 
 namespace FastWildcard.Tests
@@ -15,9 +13,13 @@ namespace FastWildcard.Tests
             //System.Text.RegularExpressions.Regex.IsMatch(str, "^" + System.Text.RegularExpressions.Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$");
 
 #if !NETCOREAPP2_1
-            LikeOperator.LikeString(str, pattern, CompareMethod.Text);
+            Microsoft.VisualBasic.CompilerServices.LikeOperator.LikeString(str, pattern, Microsoft.VisualBasic.CompareMethod.Text);
 #else
             FastWildcard.IsMatch(str, pattern);
+#endif
+
+#if NETCOREAPP
+              //new System.Management.Automation.WildcardPattern(pattern).IsMatch(str);
 #endif
 
         [Theory]

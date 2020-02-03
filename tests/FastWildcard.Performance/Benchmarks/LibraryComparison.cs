@@ -6,7 +6,7 @@ using FastWildcard.Performance.Matchers;
 
 namespace FastWildcard.Performance.Benchmarks
 {
-    [SimpleJob(RuntimeMoniker.Net461)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     [MemoryDiagnoser]
     public class LibraryComparison
     {
@@ -25,6 +25,10 @@ namespace FastWildcard.Performance.Benchmarks
 #if !NETCOREAPP2_1
         private LikeMatcher _likeMatcher;
 #endif
+#if NETCOREAPP
+        private PowerShellMatcher _powerShellMatcher;
+        private PowerShellMatcher _powerShellMatcherCompiled;
+#endif
         private RegexMatcher _regexMatcher;
         private RegexMatcher _regexMatcherCompiled;
         private WildcardMatchMatcher _wildcardMatchMatcher;
@@ -40,6 +44,10 @@ namespace FastWildcard.Performance.Benchmarks
 #if !NETCOREAPP2_1
             _likeMatcher = new LikeMatcher();
 #endif
+#if NETCOREAPP
+            _powerShellMatcher = new PowerShellMatcher(_pattern, System.Management.Automation.WildcardOptions.None);
+            _powerShellMatcherCompiled = new PowerShellMatcher(_pattern, System.Management.Automation.WildcardOptions.Compiled);
+#endif
             _regexMatcher = new RegexMatcher(_pattern, RegexOptions.None);
             _regexMatcherCompiled = new RegexMatcher(_pattern, RegexOptions.Compiled);
             _wildcardMatchMatcher = new WildcardMatchMatcher();
@@ -50,7 +58,17 @@ namespace FastWildcard.Performance.Benchmarks
 
 #if !NETCOREAPP2_1
         [Benchmark]
-        public bool Like() => _likeMatcher.Match(_str, _pattern);
+        public bool VisualBasicLike() => _likeMatcher.Match(_str, _pattern);
+#endif
+
+#if NETCOREAPP
+        [Benchmark]
+        public bool PowerShell() => _powerShellMatcher.Match(_str);
+#endif
+
+#if NETCOREAPP
+        [Benchmark]
+        public bool PowerShellCompiled() => _powerShellMatcherCompiled.Match(_str);
 #endif
 
         [Benchmark]
