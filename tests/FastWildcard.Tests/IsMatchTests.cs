@@ -1,5 +1,7 @@
 ﻿using System;
 using FluentAssertions;
+using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
 using Xunit;
 
 namespace FastWildcard.Tests
@@ -7,10 +9,19 @@ namespace FastWildcard.Tests
     public class IsMatchTests
     {
         public bool DoMatch(string str, string pattern) =>
-            FastWildcard.IsMatch(str, pattern);
+
+            //FastWildcard.IsMatch(str, pattern);
+
             //System.Text.RegularExpressions.Regex.IsMatch(str, "^" + System.Text.RegularExpressions.Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$");
 
+#if !NETCOREAPP2_1
+            LikeOperator.LikeString(str, pattern, CompareMethod.Text);
+#else
+            FastWildcard.IsMatch(str, pattern);
+#endif
+
         [Theory]
+        [Trait("Category", "Inputs")]
         [InlineData(null, "a?c")]
         public void SingleCharacterWildcard_WithNullStrInput_ReturnsFalse(string str, string pattern)
         {
@@ -20,6 +31,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Inputs")]
         [InlineData("abcde", null)]
         [InlineData("abcde", "")]
         public void SingleCharacterWildcard_WithInvalidPatternInputs_ThrowsException(string str, string pattern)
@@ -30,6 +42,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Logic")]
         [InlineData("ab", "a?c")]
         [InlineData("abc", "a?")]
         [InlineData("abc", " ")]
@@ -41,6 +54,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Logic")]
         [InlineData("a", "?")]
         [InlineData("abc", "a?c")]
         [InlineData("abcde", "a?c?e")]
@@ -55,6 +69,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Logic")]
         [InlineData("bbcde", "a?cde")]
         [InlineData("bacde", "?bcde")]
         [InlineData("bbcde", "abcd?")]
@@ -66,6 +81,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Logic")]
         [InlineData("", "*")]
         [InlineData(" ", "*")]
         [InlineData(" ", "**")]
@@ -78,6 +94,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Logic")]
         [InlineData("abc", "a*c")]
         [InlineData("abcde", "a*e")]
         [InlineData("abcde", "a**e")]
@@ -96,6 +113,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Logic")]
         [InlineData("aa", "a*a")]
         [InlineData("abc", "a*bc")]
         [InlineData("abc", "*abc")]
@@ -112,6 +130,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Logic")]
         [InlineData("abbde", "a*cde")]
         [InlineData("bbcde", "a*cde")]
         [InlineData("bacde", "*bcde")]
@@ -126,6 +145,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Logic")]
         [InlineData("ab", "a?*")]
         [InlineData("abcde", "a?c*e")]
         [InlineData("abcde", "a*c?e")]
@@ -139,6 +159,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Logic")]
         [InlineData(" ", "?*")]
         [InlineData(" ", "*?")]
         [InlineData(" ", "*?*")]
@@ -151,6 +172,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Logic")]
         [InlineData("abcde", "abcde")]
         [InlineData(" ", " ")]
         public void NoWildcard_WithMatch_ReturnsTrue(string str, string pattern)
@@ -161,6 +183,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Logic")]
         [InlineData("abbde", "abcde")]
         [InlineData(" ", "  ")]
         [InlineData("  ", " ")]
@@ -172,6 +195,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Unsupported")]
         [InlineData("aaa", "a*a")]  // Should the * be taking 0 or 1 character here?
         public void Unsupported(string str, string pattern)
         {

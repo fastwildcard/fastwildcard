@@ -8,6 +8,7 @@ namespace FastWildcard.Tests
     public class MatchSettingsTests
     {
         [Fact]
+        [Trait("Category", "Settings")]
         public void StringComparison_Default_IsOrdinal()
         {
             var matchSettings = new MatchSettings();
@@ -16,6 +17,7 @@ namespace FastWildcard.Tests
         }
 
         [Theory]
+        [Trait("Category", "Settings")]
         [MemberData(nameof(StringComparisonEnums))]
         public void StringComparison_Set_IsSet(StringComparison setting)
         {
