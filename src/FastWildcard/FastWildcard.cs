@@ -69,10 +69,10 @@ namespace FastWildcard
                 var patternChSpan = patternSpan.Slice(patternIndex, 1);
 #endif
 
-                if (strIndex >= str.Length)
+                if (strIndex == str.Length)
                 {
                     // At end of pattern for this longer string so always matches '*'
-                    if (patternCh == '*')
+                    if (patternCh == '*' && patternIndex == pattern.Length - 1)
                     {
                         return true;
                     }
@@ -86,8 +86,7 @@ namespace FastWildcard
                 if (patternChSpan.Equals(strAtIndex, matchSettings.StringComparison))
 #else
                 var strAtIndex = str[strIndex];
-                bool patternChEqualsStrAtIndex;
-                patternChEqualsStrAtIndex = matchSettings.StringComparison == StringComparison.Ordinal
+                var patternChEqualsStrAtIndex = matchSettings.StringComparison == StringComparison.Ordinal
                     ? patternCh.Equals(strAtIndex)
                     : patternCh.ToString().Equals(strAtIndex.ToString(), matchSettings.StringComparison);
                 if (patternChEqualsStrAtIndex)
@@ -124,13 +123,13 @@ namespace FastWildcard
                     ? pattern.Length - 1
                     : nextWildcardIndex - 1;
 
-                var patternChMatchLength = patternChMatchEndIndex - patternIndex;
+                var comparisonLength = patternChMatchEndIndex - patternIndex;
 
 #if (NETSTANDARD || NETCOREAPP) && !NETSTANDARD1_3 && !NETSTANDARD2_0
-                var comparison = patternSpan.Slice(patternChMatchStartIndex, patternChMatchLength);
+                var comparison = patternSpan.Slice(patternChMatchStartIndex, comparisonLength);
                 var skipToStringIndex = strSpan.Slice(strIndex).IndexOf(comparison, matchSettings.StringComparison) + strIndex;
 #else
-                var comparison = pattern.Substring(patternChMatchStartIndex, patternChMatchLength);
+                var comparison = pattern.Substring(patternChMatchStartIndex, comparisonLength);
                 var skipToStringIndex = str.IndexOf(comparison, strIndex, matchSettings.StringComparison);
 #endif
                 if (skipToStringIndex == -1)
