@@ -56,11 +56,6 @@ namespace FastWildcard.Tests
 
             var pattern = patternBuilder.ToString();
 
-            if (pattern.EndsWith("*?"))
-            {
-                pattern = pattern.Remove(pattern.Length - 1, 1);
-            }
-
             return (pattern, singleCharacterLocations.Count, multiCharacterLocations.Count);
         }
 
