@@ -1,5 +1,6 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using AutoFixture;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
@@ -16,7 +17,7 @@ namespace FastWildcard.Tests
             //System.Text.RegularExpressions.Regex.IsMatch(str, "^" + System.Text.RegularExpressions.Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$");
 
 #if !NETCOREAPP2_1
-            //Microsoft.VisualBasic.CompilerServices.LikeOperator.LikeString(str, pattern, Microsoft.VisualBasic.CompareMethod.Text);
+            //Microsoft.VisualBasic.CompilerServices.LikeOperator.LikeString(str, pattern, Microsoft.VisualBasic.CompareMethod.Binary);
 #else
             //FastWildcard.IsMatch(str, pattern);
 #endif
@@ -165,7 +166,10 @@ namespace FastWildcard.Tests
         [InlineData("abcde", "a?c*e")]
         [InlineData("abcde", "a*c?e")]
         [InlineData("abcde", "a?*de")]
-        [InlineData("pricing structure5vpzz6cbemxpkd9ze0ld1xManager utilisation Cambridgeshireiz2", "*5vpzz6cbemxpkd9ze0l?1x*i?2")]
+        [InlineData("abcde", "abc*?")]
+        [InlineData("abcde", "ab*??")]
+        [InlineData("abcde", "a*??e")]
+        [InlineData("1xutilisation Cambridgeshireiz2", "1x*i?2")]
         public void MixedWildcard_WithMatch_ReturnsTrue(string str, string pattern)
         {
             var result = DoMatch(str, pattern);
@@ -212,20 +216,39 @@ namespace FastWildcard.Tests
         [Theory, AutoData]
         [Trait("Category", "Logic")]
         public void GeneratedPattern_ThatMatches_ReturnsTrue(
-            [Range(1, 100)] int patternLength,
-            [Range(0, 100)] int singleCharacterCount,
-            [Range(0, 100)] int multiCharacterCount
+            Generator<AutoGenClass> generate
         )
         {
-            var (pattern, _, _) = IterationBuilder.BuildPattern(patternLength, singleCharacterCount, multiCharacterCount);
-            _output.WriteLine(pattern);
-            
-            var str = IterationBuilder.BuildTestString(pattern, 0, 100);
-            _output.WriteLine(str);
+            var tests = generate.Take(100).ToList();
 
-            var result = FastWildcard.IsMatch(str, pattern);
+            tests.Select(t =>
+            {
+                var isMatch = DoMatch(t.Str, t.Pattern);
+                if (!isMatch)
+                {
+                    _output.WriteLine(t.Pattern);
+                    _output.WriteLine(t.Str);
+                    _output.WriteLine("");
+                }
+                return isMatch;
+            }).Should().AllBeEquivalentTo(true);
+        }
 
-            result.Should().BeTrue();
+        public class AutoGenClass
+        {
+            internal string Str { get; }
+            internal string Pattern { get; }
+
+            public AutoGenClass()
+            {
+                var random = new Random();
+                var patternLength = random.Next(1, 100);
+                var singleCharacterCount = random.Next(0, 100);
+                var multiCharacterCount = random.Next(0, 100);
+
+                (Pattern, _, _) =  IterationBuilder.BuildPattern(patternLength, singleCharacterCount, multiCharacterCount);
+                Str = IterationBuilder.BuildTestString(Pattern, 0, 100);
+            }
         }
     }
 }

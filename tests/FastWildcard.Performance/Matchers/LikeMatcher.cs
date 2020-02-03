@@ -8,7 +8,7 @@ namespace FastWildcard.Performance.Matchers
     {
         public bool Match(string str, string pattern)
         {
-            return LikeOperator.LikeString(str, pattern, CompareMethod.Text);
+            return LikeOperator.LikeString(str, pattern, CompareMethod.Binary);
         }
     }
 }
