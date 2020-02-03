@@ -99,6 +99,7 @@ namespace FastWildcard.Tests
 
         [Theory]
         [Trait("Category", "Logic")]
+        [InlineData("aaa", "a*a")]
         [InlineData("abc", "a*c")]
         [InlineData("abcde", "a*e")]
         [InlineData("abcde", "a**e")]
@@ -192,16 +193,6 @@ namespace FastWildcard.Tests
         [InlineData(" ", "  ")]
         [InlineData("  ", " ")]
         public void NoWildcard_WithNoMatch_ReturnsFalse(string str, string pattern)
-        {
-            var result = DoMatch(str, pattern);
-
-            result.Should().BeFalse();
-        }
-
-        [Theory]
-        [Trait("Category", "Unsupported")]
-        [InlineData("aaa", "a*a")]  // Should the * be taking 0 or 1 character here?
-        public void Unsupported(string str, string pattern)
         {
             var result = DoMatch(str, pattern);
 
