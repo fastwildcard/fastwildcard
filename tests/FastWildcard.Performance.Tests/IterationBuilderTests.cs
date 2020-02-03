@@ -2,14 +2,22 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using AutoFixture.Xunit2;
-using FastWildcard.Performance.Benchmarks;
+using FastWildcard.Tests;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace FastWildcard.Performance.Tests
 {
     public class IterationBuilderTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public IterationBuilderTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Theory, AutoData]
         public void BuildPattern_InvalidParameter_ThrowsException(
             [Range(-100, 0)] int patternLength,
@@ -49,15 +57,17 @@ namespace FastWildcard.Performance.Tests
         }
 
         [Theory, AutoData]
-        public void BuildTestString_OfLength_ReturnsStringWithLength(
+        public void BuildTestString_OfLength_ReturnsString(
             [Range(1, 100)] int patternLength,
             [Range(0, 100)] int singleCharacterCount,
             [Range(0, 100)] int multiCharacterCount
         )
         {
             var (pattern, _, _) = IterationBuilder.BuildPattern(patternLength, singleCharacterCount, multiCharacterCount);
+            _output.WriteLine(pattern);
             
             var result = IterationBuilder.BuildTestString(pattern);
+            _output.WriteLine(result);
 
             result.Should().NotBeNullOrWhiteSpace();
         }
