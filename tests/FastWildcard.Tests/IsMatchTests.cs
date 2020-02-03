@@ -1,6 +1,9 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace FastWildcard.Tests
 {
@@ -23,6 +26,13 @@ namespace FastWildcard.Tests
 #else
             //FastWildcard.IsMatch(str, pattern);
 #endif
+
+        private readonly ITestOutputHelper _output;
+
+        public IsMatchTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
 
         [Theory]
         [Trait("Category", "Inputs")]
@@ -155,7 +165,7 @@ namespace FastWildcard.Tests
         [InlineData("abcde", "a?c*e")]
         [InlineData("abcde", "a*c?e")]
         [InlineData("abcde", "a?*de")]
-        [InlineData("aabbccaabbddaabbee", "a*b?cca*b*ee")]
+        [InlineData("pricing structure5vpzz6cbemxpkd9ze0ld1xManager utilisation Cambridgeshireiz2", "*5vpzz6cbemxpkd9ze0l?1x*i?2")]
         public void MixedWildcard_WithMatch_ReturnsTrue(string str, string pattern)
         {
             var result = DoMatch(str, pattern);
@@ -197,6 +207,25 @@ namespace FastWildcard.Tests
             var result = DoMatch(str, pattern);
 
             result.Should().BeFalse();
+        }
+
+        [Theory, AutoData]
+        [Trait("Category", "Logic")]
+        public void GeneratedPattern_ThatMatches_ReturnsTrue(
+            [Range(1, 100)] int patternLength,
+            [Range(0, 100)] int singleCharacterCount,
+            [Range(0, 100)] int multiCharacterCount
+        )
+        {
+            var (pattern, _, _) = IterationBuilder.BuildPattern(patternLength, singleCharacterCount, multiCharacterCount);
+            _output.WriteLine(pattern);
+            
+            var str = IterationBuilder.BuildTestString(pattern, 0, 100);
+            _output.WriteLine(str);
+
+            var result = FastWildcard.IsMatch(str, pattern);
+
+            result.Should().BeTrue();
         }
     }
 }

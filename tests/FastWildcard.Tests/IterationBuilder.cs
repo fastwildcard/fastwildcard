@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FastWildcard.Performance.Benchmarks
+namespace FastWildcard.Tests
 {
     public static class IterationBuilder
     {
@@ -41,27 +41,41 @@ namespace FastWildcard.Performance.Benchmarks
                     .Select(x => random.Next(0, patternLength))
                     .Where(x => !singleCharacterLocations.Contains(x))
                     .ToList();
-                multiCharacterLocations.ForEach(x => patternBuilder[x] = '*');
+                multiCharacterLocations
+                    .OrderByDescending(x => x)
+                    .ToList()
+                    .ForEach(x =>
+                    {
+                        patternBuilder[x] = '*';
+                        var randomLengthToRemove = random.Next(0, (int) (patternLength * 0.1));
+                        var startIndex = x + 1;
+                        var charsToRemove = Math.Min(patternBuilder.Length - startIndex, randomLengthToRemove);
+                        patternBuilder.Remove(startIndex, charsToRemove);
+                    });
             }
 
             var pattern = patternBuilder.ToString();
+
+            if (pattern.EndsWith("*?"))
+            {
+                pattern = pattern.Remove(pattern.Length - 1, 1);
+            }
+
             return (pattern, singleCharacterLocations.Count, multiCharacterLocations.Count);
         }
 
-        public static string BuildTestString(string pattern)
+        public static string BuildTestString(string pattern, int noMatchPercentage = 1, int charMatchPercentage = 99)
         {
             if (string.IsNullOrWhiteSpace(pattern))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(pattern));
 
             var randomizer = new Bogus.Randomizer();
 
-            const int noMatchPercentage = 50;
             if (WeightedMatch(noMatchPercentage))
             {
                 return randomizer.String();
             }
 
-            const int charMatchPercentage = 95;
             var strBuilder = new StringBuilder(pattern.Length * 2);
             foreach (var patternCh in pattern)
             {

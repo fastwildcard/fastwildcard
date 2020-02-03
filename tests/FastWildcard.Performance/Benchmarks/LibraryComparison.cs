@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using FastWildcard.Performance.Matchers;
+using FastWildcard.Tests;
 
 namespace FastWildcard.Performance.Benchmarks
 {

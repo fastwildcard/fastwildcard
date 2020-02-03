@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FastWildcard\FastWildcard.csproj" />
+    <ProjectReference Include="..\FastWildcard.Tests\FastWildcard.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
