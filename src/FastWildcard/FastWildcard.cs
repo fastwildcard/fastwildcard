@@ -44,7 +44,7 @@ namespace FastWildcard
             }
 
             // Multi character wildcard matches everything
-            if (pattern == "*")
+            if (pattern == MultiWildcardCharacter.ToString())
             {
                 return true;
             }
@@ -97,14 +97,14 @@ namespace FastWildcard
                 }
 
                 // Single wildcard match
-                if (patternCh == '?')
+                if (patternCh == SingleWildcardCharacter)
                 {
                     strIndex++;
                     continue;
                 }
 
                 // No match
-                if (patternCh != '*')
+                if (patternCh != MultiWildcardCharacter)
                 {
                     return false;
                 }
@@ -168,5 +168,77 @@ namespace FastWildcard
 
             return true;
         }
+
+#if (NETSTANDARD || NETCOREAPP) && !NETSTANDARD1_3 && !NETSTANDARD2_0
+        private bool CompareByCharacterAndSingleWildcardMatches(
+            ReadOnlySpan<char> str,
+            ReadOnlySpan<char> pattern,
+            StringComparison comparisonMethod
+        )
+        {
+            var compareFromIndex = 0;
+            var compareToIndex = pattern.IndexOf(SingleWildcardCharacter);
+            if (compareToIndex == -1)
+            {
+                compareToIndex = pattern.Length - 1;
+            }
+
+            for (;;)
+            {
+                var strComparison = str.Slice(compareFromIndex, compareToIndex);
+                var patternComparison = pattern.Slice(compareFromIndex, compareToIndex);
+                if (!strComparison.Equals(patternComparison, comparisonMethod))
+                {
+                    return false;
+                }
+
+                compareFromIndex = compareToIndex + 1;
+                if (compareFromIndex == pattern.Length)
+                {
+                    return true;
+                }
+
+                patternComparison = pattern.Slice(compareFromIndex);
+                compareToIndex = patternComparison.IndexOf(SingleWildcardCharacter);
+                if (compareToIndex == -1)
+                {
+                    compareToIndex = pattern.Length - 1;
+                }
+            }
+        }
+#else
+        private bool CompareByCharacterAndSingleWildcardMatches(
+            string str,
+            string pattern,
+            StringComparison comparisonMethod,
+            int compareFromIndexStart,
+            int compareToIndexStart
+        )
+        {
+            for (var compareIndex = compareFromIndexStart; compareIndex < compareToIndexStart; compareIndex++)
+            {
+                var patternCh = pattern[compareIndex];
+
+                if (patternCh == SingleWildcardCharacter)
+                {
+                    continue;
+                }
+
+                var strCh = str[compareIndex];
+
+                var chEquals = comparisonMethod == StringComparison.Ordinal
+                    ? patternCh.Equals(strCh)
+                    : patternCh.ToString().Equals(strCh.ToString(), comparisonMethod);
+                if (chEquals)
+                {
+                    continue;
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+#endif
     }
 }
