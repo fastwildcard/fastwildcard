@@ -38,6 +38,7 @@ namespace FastWildcard.Tests
         [Theory]
         [Trait("Category", "Inputs")]
         [InlineData(null, "a?c")]
+        [InlineData("", "")]
         public void SingleCharacterWildcard_WithNullStrInput_ReturnsFalse(string str, string pattern)
         {
             var resultAction = new Action(() => DoMatch(str, pattern));
