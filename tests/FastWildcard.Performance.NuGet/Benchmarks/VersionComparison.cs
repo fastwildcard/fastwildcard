@@ -1,8 +1,8 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
-using FastWildcard.Performance.Benchmarks;
 using FastWildcard.Performance.NuGet.Benchmarks.Configs;
 using FastWildcard.Performance.NuGet.Benchmarks.Matchers;
+using FastWildcard.Tests;
 
 namespace FastWildcard.Performance.NuGet.Benchmarks
 {
