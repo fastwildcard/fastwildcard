@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\FastWildcard.Performance\Benchmarks\IterationBuilder.cs" Link="Benchmarks\IterationBuilder.cs" />
+    <Compile Include="..\FastWildcard.Tests\IterationBuilder.cs" Link="Benchmarks\IterationBuilder.cs" />
   </ItemGroup>
 
   <ItemGroup>
