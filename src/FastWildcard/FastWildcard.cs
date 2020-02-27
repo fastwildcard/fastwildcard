@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FastWildcard
 {
@@ -47,6 +48,8 @@ namespace FastWildcard
                 return false;
             }
 
+            var result = true;
+
 #if (NETSTANDARD || NETCOREAPP) && !NETSTANDARD1_3 && !NETSTANDARD2_0
             var str = inputString.AsSpan();
             var ptt = wildcardPattern.AsSpan();
@@ -54,7 +57,7 @@ namespace FastWildcard
             var multiWildcardIndex = 0;
             do
             {
-                var nextMultiWildcardIndex = str.IndexOf(MultiWildcardCharacter);
+                var nextMultiWildcardIndex = ptt.IndexOf(MultiWildcardCharacter);
 
                 var compareToIndexStart = nextMultiWildcardIndex == -1 ? str.Length - 1 : nextMultiWildcardIndex;
                 if (compareToIndexStart - multiWildcardIndex == 0)
@@ -87,33 +90,138 @@ namespace FastWildcard
 #else
             var str = inputString;
             var ptt = wildcardPattern;
+            var strIndexStart = 0;
+            var pttIndexStart = 0;
+            var compareLength = ptt.Length;
+            List<int> multiWildcardIndexes = null;
 
-            var multiWildcardIndex = 0;
+            int compareIndex;
             do
             {
-                var nextMultiWildcardIndex = str.IndexOf(MultiWildcardCharacter, multiWildcardIndex);
+                compareIndex = CompareByCharacterAndSingleWildcardMatches(
+                    str,
+                    ptt,
+                    matchSettings.StringComparison,
+                    strIndexStart,
+                    pttIndexStart,
+                    compareLength
+                );
 
-                var compareToIndexStart = nextMultiWildcardIndex == -1 ? str.Length - 1 : nextMultiWildcardIndex;
-                if (compareToIndexStart - multiWildcardIndex == 0)
-                {
-                    break;
-                }
-
-                if (CompareByCharacterAndSingleWildcardMatches(
-                        str,
-                        ptt,
-                        matchSettings.StringComparison,
-                        multiWildcardIndex,
-                        compareToIndexStart) == false)
+                if (compareIndex == -1)
                 {
                     return false;
                 }
 
-                multiWildcardIndex = nextMultiWildcardIndex + 1;
-            } while (multiWildcardIndex != 0);
+                if (compareIndex > 0)
+                {
+                    var patternCh = ptt[pttIndexStart + compareIndex];
+                    if (patternCh != MultiWildcardCharacter)
+                    {
+                        return false;
+                    }
+
+                    if (multiWildcardIndexes == null)
+                    {
+                        multiWildcardIndexes = GetMultiWildcardIndexes(ptt);
+                    }
+                    var endMultiWildcardIndex = pttIndexStart + compareIndex;
+                    var startMultiWildcardIndex = multiWildcardIndexes[multiWildcardIndexes.FindLastIndex(p => p == endMultiWildcardIndex) - 1];
+                    compareLength = endMultiWildcardIndex - startMultiWildcardIndex;
+                    strIndexStart = strIndexStart - compareLength;
+                    pttIndexStart = startMultiWildcardIndex + 1;
+                }
+
+            } while (compareIndex != 0);
+
+
+
+            /*
+
+            var multiWildcardIndexes = new List<int>();
+
+            var multiWildcardIndex = ptt.IndexOf(MultiWildcardCharacter);
+
+            while (multiWildcardIndex != -1)
+            {
+                multiWildcardIndexes.Add(multiWildcardIndex);
+                multiWildcardIndex = ptt.IndexOf(MultiWildcardCharacter, multiWildcardIndex + 1);
+            }
+
+            if (multiWildcardIndexes.Count == 0)
+            {
+                return 
+            }
+
+
+            var strIndexStart = 0;
+            var pttIndexStart = 0;
+            var compareLength = multiWildcardIndexes[0];
+            for (var ii = 1; ii <= multiWildcardIndexes.Count; ii++)
+            {
+                result = CompareByCharacterAndSingleWildcardMatches(
+                    str,
+                    ptt,
+                    matchSettings.StringComparison,
+                    strIndexStart,
+                    pttIndexStart,
+                    compareLength
+                );
+
+                if (ii == multiWildcardIndexes.Count)
+                {
+                    // Test end of string and then work backwards if fails
+                    // TODO: This for loop should go in reverse
+                }
+
+                multiWildcardIndex = multiWildcardIndexes[ii - 1];
+                strIndexStart += compareLength + 1;
+                pttIndexStart = multiWildcardIndex + 1;
+                compareLength = multiWildcardIndexes[ii] - multiWildcardIndex - 1;
+            }
+            */
+
+
+
+
+
+            //var compareToIndexStart = nextMultiWildcardIndex == -1 ? ptt.Length - 1 : nextMultiWildcardIndex - 1;
+            //if (compareToIndexStart - multiWildcardIndex == 0)
+            //{
+            //    break;
+            //}
+
+            //var compareLength = compareToIndexStart - pttIndexStart;
+
+
+            //if (!result)
+            //{
+            //    strIndexStart++;
+            //    pttIndexStart++;
+            //}
+            //else
+            //{
+            //    greedyMode = true;
+            //}
+
+            //pttIndexStart = nextMultiWildcardIndex + 1;
 #endif
 
-            return true;
+            return result;
+        }
+
+        private static List<int> GetMultiWildcardIndexes(string ptt)
+        {
+            var multiWildcardIndexes = new List<int>();
+
+            var multiWildcardIndex = ptt.IndexOf(MultiWildcardCharacter);
+
+            while (multiWildcardIndex != -1)
+            {
+                multiWildcardIndexes.Add(multiWildcardIndex);
+                multiWildcardIndex = ptt.IndexOf(MultiWildcardCharacter, multiWildcardIndex + 1);
+            }
+
+            return multiWildcardIndexes;
         }
 
 #if (NETSTANDARD || NETCOREAPP) && !NETSTANDARD1_3 && !NETSTANDARD2_0
@@ -154,24 +262,31 @@ namespace FastWildcard
             }
         }
 #else
-        private static bool CompareByCharacterAndSingleWildcardMatches(
+        private static int CompareByCharacterAndSingleWildcardMatches(
             string str,
-            string pattern,
+            string ptt,
             StringComparison comparisonMethod,
-            int compareFromIndexStart,
-            int compareToIndexStart
+            int strIndexStart,
+            int pttIndexStart,
+            int length
         )
         {
-            for (var compareIndex = compareFromIndexStart; compareIndex <= compareToIndexStart; compareIndex++)
+            if (strIndexStart + length > str.Length ||
+                pttIndexStart + length > ptt.Length)
             {
-                var patternCh = pattern[compareIndex];
+                return -1;
+            }
+
+            for (var compareIndex = length - 1; compareIndex >= 0; compareIndex--)
+            {
+                var patternCh = ptt[pttIndexStart + compareIndex];
 
                 if (patternCh == SingleWildcardCharacter)
                 {
                     continue;
                 }
 
-                var strCh = str[compareIndex];
+                var strCh = str[strIndexStart + compareIndex];
 
                 var chEquals = comparisonMethod == StringComparison.Ordinal
                     ? patternCh.Equals(strCh)
@@ -181,10 +296,10 @@ namespace FastWildcard
                     continue;
                 }
 
-                return false;
+                return compareIndex;
             }
 
-            return true;
+            return 0;
         }
 #endif
     }
