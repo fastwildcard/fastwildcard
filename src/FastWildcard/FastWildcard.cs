@@ -90,9 +90,8 @@ namespace FastWildcard
 #else
             var str = inputString;
             var ptt = wildcardPattern;
-            var strIndexStart = 0;
-            var pttIndexStart = 0;
-            var compareLength = ptt.Length;
+            var strIndex = str.Length - 1;
+            var pttOffset = str.Length - ptt.Length;
             List<int> multiWildcardIndexes = null;
 
             int compareIndex;
@@ -102,9 +101,8 @@ namespace FastWildcard
                     str,
                     ptt,
                     matchSettings.StringComparison,
-                    strIndexStart,
-                    pttIndexStart,
-                    compareLength
+                    strIndex,
+                    pttOffset
                 );
 
                 if (compareIndex == -1)
@@ -114,7 +112,7 @@ namespace FastWildcard
 
                 if (compareIndex > 0)
                 {
-                    var patternCh = ptt[pttIndexStart + compareIndex];
+                    var patternCh = ptt[compareIndex - pttOffset];
                     if (patternCh != MultiWildcardCharacter)
                     {
                         return false;
@@ -124,11 +122,11 @@ namespace FastWildcard
                     {
                         multiWildcardIndexes = GetMultiWildcardIndexes(ptt);
                     }
-                    var endMultiWildcardIndex = pttIndexStart + compareIndex;
-                    var startMultiWildcardIndex = multiWildcardIndexes[multiWildcardIndexes.FindLastIndex(p => p == endMultiWildcardIndex) - 1];
-                    compareLength = endMultiWildcardIndex - startMultiWildcardIndex;
-                    strIndexStart = strIndexStart - compareLength;
-                    pttIndexStart = startMultiWildcardIndex + 1;
+                    var endMultiWildcardIndex = compareIndex - pttOffset;
+                    var findLastIndexResult = multiWildcardIndexes.FindLastIndex(p => p == endMultiWildcardIndex) - 1;
+                    var startMultiWildcardIndex = findLastIndexResult == -1 ? 0 : multiWildcardIndexes[findLastIndexResult];
+                    strIndex = compareIndex;
+                    pttOffset -= startMultiWildcardIndex;
                 }
 
             } while (compareIndex != 0);
@@ -266,27 +264,20 @@ namespace FastWildcard
             string str,
             string ptt,
             StringComparison comparisonMethod,
-            int strIndexStart,
-            int pttIndexStart,
-            int length
+            int strIndex,
+            int pttOffset
         )
         {
-            if (strIndexStart + length > str.Length ||
-                pttIndexStart + length > ptt.Length)
+            for (var compareIndex = strIndex; compareIndex >= 0; compareIndex--)
             {
-                return -1;
-            }
-
-            for (var compareIndex = length - 1; compareIndex >= 0; compareIndex--)
-            {
-                var patternCh = ptt[pttIndexStart + compareIndex];
+                var patternCh = ptt[compareIndex - pttOffset];
 
                 if (patternCh == SingleWildcardCharacter)
                 {
                     continue;
                 }
 
-                var strCh = str[strIndexStart + compareIndex];
+                var strCh = str[compareIndex];
 
                 var chEquals = comparisonMethod == StringComparison.Ordinal
                     ? patternCh.Equals(strCh)

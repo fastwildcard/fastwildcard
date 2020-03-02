@@ -98,15 +98,10 @@ namespace FastWildcard.Tests
 
         [Theory]
         [Trait("Category", "Logic")]
-        [InlineData("", "*")]
-        [InlineData(" ", "*")]
-        [InlineData(" ", "**")]
-        [InlineData(" ", "***")]
-        [InlineData("aaa", "a*a")]
-        [InlineData("abcde", "a**e")]
-        [InlineData("aabbccaabbddaabbee", "a*b*a*e")]
-        [InlineData("aabbccaabbddaabbee", "a*b*a*ee")]
-        public void MultiCharacterWildcard_WithMatchAndLengthEdgeCases_ReturnsTrue(string str, string pattern)
+        [InlineData("abc", "a*c")]
+        [InlineData("abcde", "a*e")]
+        [InlineData("abcde", "a*c*e")]
+        public void MultiCharacterWildcard_WithMatchAndSimpleCases_ReturnsTrue(string str, string pattern)
         {
             var result = DoMatch(str, pattern);
 
@@ -115,16 +110,21 @@ namespace FastWildcard.Tests
 
         [Theory]
         [Trait("Category", "Logic")]
-        [InlineData("abc", "a*c")]
-        [InlineData("abcde", "a*e")]
-        [InlineData("abcde", "a*c*e")]
+        [InlineData("", "*")]
+        [InlineData(" ", "*")]
+        [InlineData(" ", "**")]
+        [InlineData(" ", "***")]
+        [InlineData("aaa", "a*a")]
+        [InlineData("abcde", "a**e")]
+        [InlineData("aabbccaabbddaabbee", "a*b*a*e")]
+        [InlineData("aabbccaabbddaabbee", "a*b*a*ee")]
         [InlineData("abcde", "*bcde")]
         [InlineData("abcde", "abcd*")]
         [InlineData("abcdefg", "*bc*fg")]
+        [InlineData("abc/def/ghi", "*/ghi")]
         [InlineData("abc/def/ghi", "abc*/ghi")]
         [InlineData("abc/def/ghi", "abc/*/ghi")]
-        [InlineData("abc/def/ghi", "*/ghi")]
-        public void MultiCharacterWildcard_WithMatch_ReturnsTrue(string str, string pattern)
+        public void MultiCharacterWildcard_WithMatchAndComplexCases_ReturnsTrue(string str, string pattern)
         {
             var result = DoMatch(str, pattern);
 
