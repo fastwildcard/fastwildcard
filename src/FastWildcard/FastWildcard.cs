@@ -90,48 +90,57 @@ namespace FastWildcard
 #else
             var str = inputString;
             var ptt = wildcardPattern;
-            var strIndex = str.Length - 1;
-            var pttOffset = str.Length - ptt.Length;
-            List<int> multiWildcardIndexes = null;
+            var strOffset = 0;
+            var pttOffset = 0;
 
             int compareIndex;
+            // ReSharper disable once TooWideLocalVariableScope
+            char? pttCh;
+            bool inMultiWildcardMode = false;
+
+            (compareIndex, pttCh) = CompareByCharacterAndSingleWildcardMatches(
+                str,
+                ptt,
+                matchSettings.StringComparison,
+                strOffset,
+                pttOffset
+            );
+
+            if (compareIndex + strOffset == str.Length)
+            {
+                return true;
+            }
+
             do
             {
-                compareIndex = CompareByCharacterAndSingleWildcardMatches(
-                    str,
-                    ptt,
-                    matchSettings.StringComparison,
-                    strIndex,
-                    pttOffset
-                );
-
                 if (compareIndex == -1)
                 {
                     return false;
                 }
 
-                if (compareIndex > 0)
+                if (pttCh == MultiWildcardCharacter)
                 {
-                    var patternCh = ptt[compareIndex - pttOffset];
-                    if (patternCh != MultiWildcardCharacter)
-                    {
-                        return false;
-                    }
-
-                    if (multiWildcardIndexes == null)
-                    {
-                        multiWildcardIndexes = GetMultiWildcardIndexes(ptt);
-                    }
-                    var endMultiWildcardIndex = compareIndex - pttOffset;
-                    var findLastIndexResult = multiWildcardIndexes.FindLastIndex(p => p == endMultiWildcardIndex) - 1;
-                    var startMultiWildcardIndex = findLastIndexResult == -1 ? 0 : multiWildcardIndexes[findLastIndexResult];
-                    strIndex = compareIndex;
-                    pttOffset -= startMultiWildcardIndex;
+                    inMultiWildcardMode = true;
+                    //strOffset += compareIndex + 1;
+                    pttOffset += compareIndex + 1;
                 }
 
-            } while (compareIndex != 0);
+                if (inMultiWildcardMode)
+                {
+                    strOffset += compareIndex + 1;
+                    //pttOffset += compareIndex + 1;
+                }
 
+                (compareIndex, pttCh) = CompareByCharacterAndSingleWildcardMatches(
+                    str,
+                    ptt,
+                    matchSettings.StringComparison,
+                    strOffset,
+                    pttOffset
+                );
+            } while (compareIndex + strOffset != str.Length);
 
+            return true;
 
             /*
 
@@ -260,37 +269,45 @@ namespace FastWildcard
             }
         }
 #else
-        private static int CompareByCharacterAndSingleWildcardMatches(
+        private static (int, char?) CompareByCharacterAndSingleWildcardMatches(
             string str,
             string ptt,
             StringComparison comparisonMethod,
-            int strIndex,
+            int strOffset,
             int pttOffset
         )
         {
-            for (var compareIndex = strIndex; compareIndex >= 0; compareIndex--)
+            for (var compareIndex = 0; ; compareIndex++)
             {
-                var patternCh = ptt[compareIndex - pttOffset];
+                var pttIndex = compareIndex + pttOffset;
+                if (pttIndex == ptt.Length)
+                    return (compareIndex, null);
 
-                if (patternCh == SingleWildcardCharacter)
+                var pttCh = ptt[pttIndex];
+
+                if (pttCh == SingleWildcardCharacter)
                 {
                     continue;
                 }
 
-                var strCh = str[compareIndex];
+                var strIndex = compareIndex + strOffset;
+                if (strIndex == str.Length)
+                    return (compareIndex, null);
+
+                var strCh = str[strIndex];
 
                 var chEquals = comparisonMethod == StringComparison.Ordinal
-                    ? patternCh.Equals(strCh)
-                    : patternCh.ToString().Equals(strCh.ToString(), comparisonMethod);
+                    ? pttCh.Equals(strCh)
+                    : pttCh.ToString().Equals(strCh.ToString(), comparisonMethod);
                 if (chEquals)
                 {
                     continue;
                 }
 
-                return compareIndex;
+                return (compareIndex, pttCh);
             }
 
-            return 0;
+            throw new Exception("Wasn't expecting this");
         }
 #endif
     }

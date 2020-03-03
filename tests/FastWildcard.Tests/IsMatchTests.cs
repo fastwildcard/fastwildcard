@@ -171,12 +171,26 @@ namespace FastWildcard.Tests
         [InlineData("abcde", "abc*?")]
         [InlineData("abcde", "ab*??")]
         [InlineData("abcde", "a*??e")]
+        [InlineData("abcdef", "abc*?f")]
         [InlineData("1xutilisation Cambridgeshireiz2", "1x*i?2")]
         public void MixedWildcard_WithMatch_ReturnsTrue(string str, string pattern)
         {
             var result = DoMatch(str, pattern);
 
             result.Should().BeTrue();
+        }
+
+        [Theory]
+        [Trait("Category", "Logic")]
+        [InlineData("abcdef", "abc*g?")]
+        [InlineData("abcdef", "abc?g*")]
+        [InlineData("abcdef", "abc?*g")]
+        [InlineData("abcdef", "abc*?g")]
+        public void MixedWildcard_WithNoMatch_ReturnsFalse(string str, string pattern)
+        {
+            var result = DoMatch(str, pattern);
+
+            result.Should().BeFalse();
         }
 
         [Theory]
