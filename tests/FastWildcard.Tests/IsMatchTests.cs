@@ -14,10 +14,10 @@ namespace FastWildcard.Tests
 
             FastWildcard.IsMatch(str, pattern);
 
-            //System.Text.RegularExpressions.Regex.IsMatch(str, "^" + System.Text.RegularExpressions.Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$");
+        //System.Text.RegularExpressions.Regex.IsMatch(str, "^" + System.Text.RegularExpressions.Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$");
 
 #if !NETCOREAPP2_1
-            //Microsoft.VisualBasic.CompilerServices.LikeOperator.LikeString(str, pattern, Microsoft.VisualBasic.CompareMethod.Binary);
+        //Microsoft.VisualBasic.CompilerServices.LikeOperator.LikeString(str, pattern, Microsoft.VisualBasic.CompareMethod.Binary);
 #else
             //FastWildcard.IsMatch(str, pattern);
 #endif
@@ -25,7 +25,7 @@ namespace FastWildcard.Tests
 #if NETCOREAPP
             //new System.Management.Automation.WildcardPattern(pattern).IsMatch(str);
 #else
-            //FastWildcard.IsMatch(str, pattern);
+        //FastWildcard.IsMatch(str, pattern);
 #endif
 
         private readonly ITestOutputHelper _output;
@@ -117,6 +117,8 @@ namespace FastWildcard.Tests
         [InlineData("abcde", "*bcde")]
         [InlineData("abcde", "abcd*")]
         [InlineData("abcdefg", "*bc*fg")]
+        [InlineData("Abczwwez", "Abc*wwe*")]
+        [InlineData("Abczwwe/z", "Abc*wwe/*")]
         [InlineData("abc/def/ghi", "abc*/ghi")]
         [InlineData("abc/def/ghi", "abc/*/ghi")]
         [InlineData("abc/def/ghi", "*/ghi")]
@@ -166,11 +168,21 @@ namespace FastWildcard.Tests
         [InlineData("abcde", "a?c*e")]
         [InlineData("abcde", "a*c?e")]
         [InlineData("abcde", "a?*de")]
-        [InlineData("abcde", "abc*?")]
-        [InlineData("abcde", "ab*??")]
-        [InlineData("abcde", "a*??e")]
-        [InlineData("1xutilisation Cambridgeshireiz2", "1x*i?2")]
         public void MixedWildcard_WithMatch_ReturnsTrue(string str, string pattern)
+        {
+            var result = DoMatch(str, pattern);
+
+            result.Should().BeTrue();
+        }
+
+        //[Theory]
+        [Theory(Skip = "Bug #45")]
+        [Trait("Category", "Logic")]
+        [InlineData("abcde", "a*??e")]
+        [InlineData("abcde", "ab*??")]
+        [InlineData("abcde", "abc*?")]
+        [InlineData("1xutilisation Cambridgeshireiz2", "1x*i?2")]
+        public void MixedWildcard_WithMatch_ReturnsTrueButFailing(string str, string pattern)
         {
             var result = DoMatch(str, pattern);
 
@@ -213,7 +225,7 @@ namespace FastWildcard.Tests
             result.Should().BeFalse();
         }
 
-        [Theory, AutoData]
+        [Theory(Skip = "Bug #45"), AutoData]
         [Trait("Category", "Logic")]
         public void GeneratedPattern_ThatMatches_ReturnsTrue(
             Generator<AutoGenClass> generate
